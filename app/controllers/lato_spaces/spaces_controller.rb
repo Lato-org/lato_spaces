@@ -1,9 +1,9 @@
 module LatoSpaces
   class SpacesController < ApplicationController
-    before_action :find_space, only: %i[edit update destroy]
+    before_action :find_space, only: %i[edit update destroy members]
 
     def index
-      columns = %i[name members actions]
+      columns = %i[name lato_space_members actions]
       sortable_columns = %i[name]
       searchable_columns = %i[name]
 
@@ -42,6 +42,21 @@ module LatoSpaces
     def destroy
       @space.destroy
       redirect_to lato_spaces.spaces_path, notice: 'Spaces correctly destroyed.'
+    end
+
+    def members
+      columns = %i[lato_user_id actions]
+      sortable_columns = %i[lato_user_id]
+      searchable_columns = %i[lato_user_id]
+
+      @space_members = lato_index_collection(
+        @space.lato_space_members,
+        columns: columns,
+        sortable_columns: sortable_columns,
+        searchable_columns: searchable_columns,
+        default_sort_by: 'lato_user_id|ASC',
+        pagination: true
+      )
     end
 
     private
