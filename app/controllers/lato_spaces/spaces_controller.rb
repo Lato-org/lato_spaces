@@ -22,7 +22,9 @@ module LatoSpaces
     end
 
     def create
-      @space = LatoSpaces::Space.new(space_params)
+      @space = LatoSpaces::Space.new(space_params.merge(
+        lato_user_creator_id: @session.user_id
+      ))
       return render :new unless @space.save
 
       redirect_to lato_spaces.spaces_path, notice: 'Spaces correctly created.'

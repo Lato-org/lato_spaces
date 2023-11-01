@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_11_01_082507) do
+ActiveRecord::Schema[7.1].define(version: 2023_11_01_103121) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -82,10 +82,21 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_01_082507) do
     t.index ["lato_user_id"], name: "index_lato_operations_on_lato_user_id"
   end
 
-  create_table "lato_spaces_spaces", force: :cascade do |t|
-    t.string "name"
+  create_table "lato_space_members", force: :cascade do |t|
+    t.integer "lato_space_id"
+    t.integer "lato_user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["lato_space_id"], name: "index_lato_space_members_on_lato_space_id"
+    t.index ["lato_user_id"], name: "index_lato_space_members_on_lato_user_id"
+  end
+
+  create_table "lato_spaces", force: :cascade do |t|
+    t.string "name"
+    t.integer "lato_user_creator_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["lato_user_creator_id"], name: "index_lato_spaces_on_lato_user_creator_id"
   end
 
   create_table "lato_users", force: :cascade do |t|
@@ -108,4 +119,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_01_082507) do
   add_foreign_key "lato_log_user_signins", "lato_users"
   add_foreign_key "lato_log_user_signups", "lato_users"
   add_foreign_key "lato_operations", "lato_users"
+  add_foreign_key "lato_space_members", "lato_spaces"
+  add_foreign_key "lato_space_members", "lato_users"
+  add_foreign_key "lato_spaces", "lato_users", column: "lato_user_creator_id"
 end

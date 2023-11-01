@@ -21,3 +21,6 @@ gem 'sassc-rails'
 gem 'bootstrap'
 gem 'lato'
 
+# Testing dependencies
+gem "rails-erd"
+
