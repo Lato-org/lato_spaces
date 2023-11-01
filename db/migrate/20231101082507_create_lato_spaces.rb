@@ -1,4 +1,4 @@
-class CreateLatoSpacesSpaces < ActiveRecord::Migration[7.1]
+class CreateLatoSpaces < ActiveRecord::Migration[7.1]
   def change
     create_table :lato_spaces do |t|
       t.string :name

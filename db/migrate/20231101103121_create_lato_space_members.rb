@@ -1,4 +1,4 @@
-class CreateLatoSpacesSpaceMembers < ActiveRecord::Migration[7.1]
+class CreateLatoSpaceMembers < ActiveRecord::Migration[7.1]
   def change
     create_table :lato_space_members do |t|
       t.references :lato_space, foreign_key: { to_table: :lato_spaces }

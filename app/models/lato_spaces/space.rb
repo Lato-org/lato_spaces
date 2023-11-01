@@ -2,7 +2,7 @@ module LatoSpaces
   class Space < ApplicationRecord
     self.table_name = 'lato_spaces'
 
-    attr_accessor :actions
+    attr_accessor :members, :actions
 
     # Relations
     ##

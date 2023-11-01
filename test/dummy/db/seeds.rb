@@ -7,6 +7,7 @@ Lato::User.create!(
   password: 'Password1!',
   password_confirmation: 'Password1!',
   accepted_privacy_policy_version: 1,
-  accepted_terms_and_conditions_version: 1
+  accepted_terms_and_conditions_version: 1,
+  lato_spaces_access: true
 )
 puts 'Default lato user created successfully!'

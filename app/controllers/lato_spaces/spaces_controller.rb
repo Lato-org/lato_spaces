@@ -3,7 +3,7 @@ module LatoSpaces
     before_action :find_space, only: %i[edit update destroy]
 
     def index
-      columns = %i[name actions]
+      columns = %i[name members actions]
       sortable_columns = %i[name]
       searchable_columns = %i[name]
 
