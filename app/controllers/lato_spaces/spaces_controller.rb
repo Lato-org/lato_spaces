@@ -1,6 +1,6 @@
 module LatoSpaces
   class SpacesController < ApplicationController
-    before_action :find_space, only: %i[edit update destroy members]
+    before_action :find_space, only: %i[edit update destroy members new_member create_member]
 
     def index
       columns = %i[name lato_space_members actions]
@@ -25,7 +25,7 @@ module LatoSpaces
       @space = LatoSpaces::Space.new(space_params.merge(
         lato_user_creator_id: @session.user_id
       ))
-      return render :new unless @space.save
+      return render :new, status: :unprocessable_entity unless @space.save
 
       redirect_to lato_spaces.spaces_path, notice: 'Spaces correctly created.'
     end
@@ -34,7 +34,7 @@ module LatoSpaces
     end
 
     def update
-      return render :edit unless @space.update(space_params)
+      return render :edit, status: :unprocessable_entity unless @space.update(space_params)
 
       redirect_to lato_spaces.spaces_path, notice: 'Spaces correctly updated.'
     end
@@ -59,10 +59,27 @@ module LatoSpaces
       )
     end
 
+    def new_member
+      @space_member = @space.lato_space_members.new
+    end
+
+    def create_member
+      @space_member = @space.lato_space_members.new(space_member_params.merge(
+        lato_user_creator_id: @session.user_id
+      ))
+      return render :new_member, status: :unprocessable_entity unless @space_member.save
+
+      redirect_to lato_spaces.members_space_path(@space), notice: 'Member correctly created.'
+    end
+
     private
 
     def space_params
       params.require(:space).permit(:name)
+    end
+
+    def space_member_params
+      params.require(:space_member).permit(:email)
     end
 
     def find_space

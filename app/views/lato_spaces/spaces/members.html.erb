@@ -5,7 +5,15 @@
 <div class="card">
   <div class="card-body">
     <%= turbo_frame_tag dom_id(@space, 'members') do %>
-      <%= lato_index @space_members %>
+      <%= lato_index @space_members,
+        custom_actions: {
+          create: {
+            path: lato_spaces.new_member_space_path(@space),
+            icon: 'bi bi-plus',
+            data: { lato_action_target: 'trigger', turbo_frame: dom_id(LatoSpaces::SpaceMember.new, 'form'), action_title: 'Invite member' }
+          }
+        }
+      %>
     <% end %>
   </div>
 </div>

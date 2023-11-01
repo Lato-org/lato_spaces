@@ -14,7 +14,7 @@ module LatoSpaces
     def authenticate_lato_spaces_access
       return true if @session.user.lato_spaces_access
 
-      redirect_to main_app.root_path, alert: 'You have not access to this section.'
+      redirect_to lato.root_path, alert: 'You have not access to this section.'
     end
   end
 end

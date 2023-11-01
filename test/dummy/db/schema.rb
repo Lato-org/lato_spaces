@@ -85,9 +85,13 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_01_103121) do
   create_table "lato_space_members", force: :cascade do |t|
     t.integer "lato_space_id"
     t.integer "lato_user_id"
+    t.integer "lato_invitation_id"
+    t.integer "lato_user_creator_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["lato_invitation_id"], name: "index_lato_space_members_on_lato_invitation_id"
     t.index ["lato_space_id"], name: "index_lato_space_members_on_lato_space_id"
+    t.index ["lato_user_creator_id"], name: "index_lato_space_members_on_lato_user_creator_id"
     t.index ["lato_user_id"], name: "index_lato_space_members_on_lato_user_id"
   end
 
@@ -120,7 +124,9 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_01_103121) do
   add_foreign_key "lato_log_user_signins", "lato_users"
   add_foreign_key "lato_log_user_signups", "lato_users"
   add_foreign_key "lato_operations", "lato_users"
+  add_foreign_key "lato_space_members", "lato_invitations"
   add_foreign_key "lato_space_members", "lato_spaces"
   add_foreign_key "lato_space_members", "lato_users"
+  add_foreign_key "lato_space_members", "lato_users", column: "lato_user_creator_id"
   add_foreign_key "lato_spaces", "lato_users", column: "lato_user_creator_id"
 end

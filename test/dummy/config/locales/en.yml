@@ -3,3 +3,6 @@ en:
     attributes:
       lato_spaces/space:
         lato_space_members: Members
+      lato_spaces/space_member:
+        lato_user: User
+        lato_user_id: User

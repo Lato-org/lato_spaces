@@ -18,8 +18,16 @@ module LatoSpaces
     # Hooks
     ##
 
-    after_save do
+    after_create do
       lato_space_members.create!(lato_user_id: lato_user_creator_id)
+    end
+
+    # External hooks
+    ##
+
+    # listen Lato::User destroy event to update creator
+    Lato::User.after_destroy do |user|
+      LatoSpaces::Space.where(lato_user_creator_id: user.id).update_all(lato_user_creator_id: nil)
     end
   end
 end
