@@ -1,0 +1,10 @@
+<%= lato_page_head 'New group', [
+  { label: 'Spaces' },
+  { label: 'Groups', path: lato_spaces.groups_path }
+] %>
+
+<div class="card">
+  <div class="card-body">
+    <%= render "form", group: @group %>
+  </div>
+</div>

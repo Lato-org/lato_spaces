@@ -1,6 +1,6 @@
 module LatoSpaces
   class GroupsController < ApplicationController
-    before_action :find_group, only: %i[update update_action destroy_action]
+    before_action :find_group, only: %i[show update_action destroy_action]
 
     def index
       columns = %i[name actions]
@@ -18,12 +18,24 @@ module LatoSpaces
     end
 
     def create
+      @group = LatoSpaces::Group.new
     end
 
     def create_action
+      @group = LatoSpaces::Group.new(group_params)
+
+      respond_to do |format|
+        if @group.save
+          format.html { redirect_to lato_spaces.groups_show_path(@group), notice: 'Group was successfully created.' }
+          format.json { render json: @group }
+        else
+          format.html { render :create, status: :unprocessable_entity }
+          format.json { render json: @group.errors, status: :unprocessable_entity }
+        end
+      end
     end
 
-    def update
+    def show
     end
 
     def update_action
@@ -39,7 +51,7 @@ module LatoSpaces
     end
 
     def find_group
-      @space = LatoSpaces::Group.find(params[:id])
+      @group = LatoSpaces::Group.find(params[:id])
     end
   end
 end
