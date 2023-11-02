@@ -75,7 +75,7 @@ module LatoSpaces
 
     def reinvite_member
       return redirect_to lato_spaces.members_space_path(@space_member.lato_space_id), status: :unprocessable_entity unless @space_member.lato_invitation
-      return redirect_to lato_spaces.members_space_path(@space_member.lato_space_id), alert: @space_member.lato_invitation.errors.full_messages.to_sentence unless @space_member.lato_invitation.send_invite
+      return redirect_to lato_spaces.members_space_path(@space_member.lato_space_id), status: :unprocessable_entity, alert: @space_member.lato_invitation.errors.full_messages.to_sentence unless @space_member.lato_invitation.send_invite
 
       redirect_to lato_spaces.members_space_path(@space_member.lato_space_id), notice: 'Member correctly reinvited.'
     end

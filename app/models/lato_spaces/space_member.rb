@@ -39,7 +39,7 @@ module LatoSpaces
           invitation = Lato::Invitation.find_by_email(email)
           invitation ||= Lato::Invitation.create(email: email, inviter_lato_user_id: lato_user_creator_id)
           unless invitation
-            errors.add(:email, 'L\'invito non è stato creato correttamente.')
+            errors.add(:email, 'There was an error with the invitation.')
             throw(:abort)
           end
           self.lato_invitation_id = invitation.id
