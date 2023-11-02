@@ -22,56 +22,43 @@ module LatoSpaces
       assert_response :success
     end
 
-    # new
-    ##
-
-    test "new should response with redirect without session" do
-      get lato_spaces.new_space_url
-      assert_response :redirect
-    end
-
-    test "new should response with success with session" do
-      authenticate_user
-
-      get lato_spaces.new_space_url
-      assert_response :success
-    end
-
     # create
     ##
 
     test "create should response with redirect without session" do
-      post lato_spaces.spaces_url, params: { space: { name: 'test' } }
+      get lato_spaces.spaces_create_url
       assert_response :redirect
     end
 
     test "create should response with success with session" do
       authenticate_user
 
-      post lato_spaces.spaces_url, params: { space: { name: 'test' } }
-      assert_response :redirect
-
-      space = LatoSpaces::Space.last
-      assert_equal space.name, 'test'
+      get lato_spaces.spaces_create_url
+      assert_response :success
     end
 
-    # edit
+    # create_action
     ##
 
-    test "edit should response with redirect without session" do
-      space = lato_spaces_spaces(:space)
-
-      get lato_spaces.edit_space_url(space)
+    test "create_action should response with redirect without session" do
+      post lato_spaces.spaces_create_action_url
       assert_response :redirect
     end
 
-    test "edit should response with success with session" do
+    test "create_action should create a new space" do
       authenticate_user
 
-      space = lato_spaces_spaces(:space)
+      post lato_spaces.spaces_create_action_url, params: {
+        space: {
+          name: 'test'
+        }
+      }
+      assert_redirected_to lato_spaces.spaces_path
 
-      get lato_spaces.edit_space_url(space)
-      assert_response :success
+      # check if space is created
+      last_created_space = LatoSpaces::Space.last
+      assert_equal last_created_space.name, 'test'
+      assert_equal last_created_space.lato_user_creator_id, @user.id
     end
 
     # update
@@ -80,98 +67,64 @@ module LatoSpaces
     test "update should response with redirect without session" do
       space = lato_spaces_spaces(:space)
 
-      patch lato_spaces.space_url(space), params: { space: { name: 'test' } }
+      get lato_spaces.spaces_update_url(space)
       assert_response :redirect
     end
 
     test "update should response with success with session" do
       authenticate_user
-
       space = lato_spaces_spaces(:space)
 
-      patch lato_spaces.space_url(space), params: { space: { name: 'test' } }
-      assert_response :redirect
+      get lato_spaces.spaces_update_url(space)
+      assert_response :success
+    end
 
+    # update_action
+    ##
+
+    test "update_action should response with redirect without session" do
+      space = lato_spaces_spaces(:space)
+
+      patch lato_spaces.spaces_update_action_url(space)
+      assert_response :redirect
+    end
+
+    test "update_action should update a space" do
+      authenticate_user
+      space = lato_spaces_spaces(:space)
+
+      patch lato_spaces.spaces_update_action_url(space), params: {
+        space: {
+          name: 'test'
+        }
+      }
+      assert_redirected_to lato_spaces.spaces_path
+
+      # check if space is updated
       space.reload
       assert_equal space.name, 'test'
     end
 
-    # destroy
+    # destroy_action
     ##
 
-    test "destroy should response with redirect without session" do
+    test "destroy_action should response with redirect without session" do
       space = lato_spaces_spaces(:space)
 
-      delete lato_spaces.space_url(space)
+      delete lato_spaces.spaces_destroy_action_url(space)
       assert_response :redirect
     end
 
-    test "destroy should response with success with session" do
+    test "destroy_action should destroy a space" do
       authenticate_user
-
       space = lato_spaces_spaces(:space)
 
-      delete lato_spaces.space_url(space)
-      assert_response :redirect
+      delete lato_spaces.spaces_destroy_action_url(space)
+      assert_redirected_to lato_spaces.spaces_path
 
-      assert_not LatoSpaces::Space.exists?(space.id)
+      # check if space is destroyed
+      assert_nil LatoSpaces::Space.find_by(id: space.id)
     end
 
-    # members
-    ##
-
-    test "members should response with redirect without session" do
-      space = lato_spaces_spaces(:space)
-
-      get lato_spaces.members_space_url(space)
-      assert_response :redirect
-    end
-
-    test "members should response with success with session" do
-      authenticate_user
-
-      space = lato_spaces_spaces(:space)
-
-      get lato_spaces.members_space_url(space)
-      assert_response :success
-    end
-
-    # new_member
-    ##
-
-    test "new_member should response with redirect without session" do
-      space = lato_spaces_spaces(:space)
-
-      get lato_spaces.new_member_space_url(space)
-      assert_response :redirect
-    end
-
-    test "new_member should response with success with session" do
-      authenticate_user
-
-      space = lato_spaces_spaces(:space)
-
-      get lato_spaces.new_member_space_url(space)
-      assert_response :success
-    end
-
-    # create_member
-    ##
-
-    test "create_member should response with redirect without session" do
-      space = lato_spaces_spaces(:space)
-
-      post lato_spaces.create_member_space_url(space), params: { space_member: { email: 'test@mail.com' } }
-      assert_response :redirect
-    end
-
-    test "create_member should response with success with session" do
-      authenticate_user
-
-      space = lato_spaces_spaces(:space)
-
-      post lato_spaces.create_member_space_url(space), params: { space_member: { email: 'test@mail.com' } }
-      assert_response :redirect
-    end
   end
 end

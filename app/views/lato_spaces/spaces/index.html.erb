@@ -5,7 +5,7 @@
     <%= lato_index @spaces,
       custom_actions: {
         create: {
-          path: lato_spaces.new_space_path,
+          path: lato_spaces.spaces_create_path,
           icon: 'bi bi-plus',
           data: { lato_action_target: 'trigger', turbo_frame: dom_id(LatoSpaces::Space.new, 'form'), action_title: 'New space' }
         }
