@@ -87,5 +87,23 @@ module LatoSpaces
     def email
       @email ||= lato_user&.email || lato_invitation&.email
     end
+
+    # Operations
+    ##
+
+    def send_invite
+      if !lato_user_id.blank? || lato_invitation_id.blank?
+        # TODO: aggiungere errore
+        return false
+      end
+
+      result = lato_invitation.send_invite
+      unless result
+        # TODO: Aggiungere errore
+        return false
+      end
+
+      true
+    end
   end
 end

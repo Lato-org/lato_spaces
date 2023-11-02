@@ -126,5 +126,67 @@ module LatoSpaces
       assert_nil LatoSpaces::Space.find_by(id: space.id)
     end
 
+    # members_create
+    ##
+
+    test "members_create should response with redirect without session" do
+      space = lato_spaces_spaces(:space)
+
+      get lato_spaces.spaces_members_create_url(space)
+      assert_response :redirect
+    end
+
+    test "members_create should response with success with session" do
+      authenticate_user
+
+      space = lato_spaces_spaces(:space)
+      get lato_spaces.spaces_members_create_url(space)
+      assert_response :success
+    end
+
+    # members_create_action
+    ##
+
+    test "members_create_action should response with redirect without session" do
+      space = lato_spaces_spaces(:space)
+
+      post lato_spaces.spaces_members_create_action_url(space, params: {
+        space_member: {
+          email: 'test@mail.com'
+        }
+      })
+      assert_response :redirect
+    end
+
+    test "members_create_action should create a new space member" do
+      authenticate_user
+
+      space = lato_spaces_spaces(:space)
+      post lato_spaces.spaces_members_create_action_url(space, params: {
+        space_member: {
+          email: 'test@mail.com'
+        }
+      })
+      assert_redirected_to lato_spaces.spaces_members_url(space)
+    end
+
+    # members_send_invite_action
+    ##
+
+    test "members_send_invite_action should response with redirect without session" do
+      space_member = lato_spaces_space_members(:space_member_invitation)
+
+      post lato_spaces.spaces_members_send_invite_action_url(space_member)
+      assert_response :redirect
+    end
+
+    # test "members_send_invite_action should send an invite to a space member" do
+    #   authenticate_user
+
+    #   space_member = lato_spaces_space_members(:space_member_invitation)
+    #   post lato_spaces.spaces_members_send_invite_action_url(space_member)
+    #   assert_redirected_to lato_spaces.spaces_members_url(space_member.lato_space)
+    # end
+
   end
 end

@@ -1,5 +1,5 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-space_member_invitation:
-  lato_space: space
-  lato_invitation: invitation
+invitation:
+  email: pippo.franco.invitation@mail.com
+  accepted_code: '1234'

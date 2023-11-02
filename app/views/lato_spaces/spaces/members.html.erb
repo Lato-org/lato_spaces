@@ -7,7 +7,7 @@
     <%= lato_index @space_members,
       custom_actions: {
         create: {
-          path: lato_spaces.new_member_space_path(@space),
+          path: lato_spaces.spaces_members_create_path(@space),
           icon: 'bi bi-plus',
           data: { lato_action_target: 'trigger', turbo_frame: dom_id(LatoSpaces::SpaceMember.new, 'form'), action_title: 'Invite member' }
         }

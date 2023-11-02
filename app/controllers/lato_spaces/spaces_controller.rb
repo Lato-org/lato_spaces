@@ -1,7 +1,7 @@
 module LatoSpaces
   class SpacesController < ApplicationController
-    before_action :find_space, only: %i[update update_action destroy_action]
-    before_action :find_space_member, only: %i[]
+    before_action :find_space, only: %i[update update_action destroy_action members members_create members_create_action]
+    before_action :find_space_member, only: %i[members_send_invite_action members_destroy_action]
 
     def index
       columns = %i[name lato_space_members actions]
@@ -63,72 +63,62 @@ module LatoSpaces
       end
     end
 
-    # def new
-    #   @space = LatoSpaces::Space.new
-    # end
+    def members
+      columns = %i[lato_user_id actions]
+      sortable_columns = %i[]
+      searchable_columns = %i[lato_user_id]
 
-    # def create
-    #   @space = LatoSpaces::Space.new(space_params.merge(
-    #     lato_user_creator_id: @session.user_id
-    #   ))
-    #   return render :new, status: :unprocessable_entity unless @space.save
+      @space_members = lato_index_collection(
+        @space.lato_space_members,
+        columns: columns,
+        sortable_columns: sortable_columns,
+        searchable_columns: searchable_columns,
+        default_sort_by: 'lato_user_id|ASC',
+        pagination: true
+      )
+    end
 
-    #   redirect_to lato_spaces.spaces_path, notice: 'Spaces correctly created.'
-    # end
+    def members_create
+      @space_member = @space.lato_space_members.new
+    end
 
-    # def edit
-    # end
+    def members_create_action
+      @space_member = @space.lato_space_members.new(space_member_params.merge(lato_user_creator_id: @session.user_id))
 
-    # def update
-    #   return render :edit, status: :unprocessable_entity unless @space.update(space_params)
+      respond_to do |format|
+        if @space_member.save
+          format.html { redirect_to lato_spaces.spaces_members_path(@space), notice: 'Member was successfully invited.' }
+          format.json { render json: @space_member }
+        else
+          format.html { render :members_create, status: :unprocessable_entity }
+          format.json { render json: @space_member.errors, status: :unprocessable_entity }
+        end
+      end
+    end
 
-    #   redirect_to lato_spaces.spaces_path, notice: 'Spaces correctly updated.'
-    # end
+    def members_send_invite_action
+      respond_to do |format|
+        if @space_member.send_invite
+          format.html { redirect_to lato_spaces.spaces_members_path(@space), notice: 'Member was successfully invited.' }
+          format.json { render json: @space_member }
+        else
+          format.html { redirect_to lato_spaces.spaces_members_path(@space), status: :unprocessable_entity, alert: @space_member.errors.full_messages.to_sentence }
+          format.json { render json: @space_member.errors, status: :unprocessable_entity }
+        end
+      end
+    end
 
-    # def destroy
-    #   @space.destroy
-    #   redirect_to lato_spaces.spaces_path, notice: 'Spaces correctly destroyed.'
-    # end
-
-    # def members
-    #   columns = %i[lato_user_id actions]
-    #   sortable_columns = %i[]
-    #   searchable_columns = %i[lato_user_id]
-
-    #   @space_members = lato_index_collection(
-    #     @space.lato_space_members,
-    #     columns: columns,
-    #     sortable_columns: sortable_columns,
-    #     searchable_columns: searchable_columns,
-    #     default_sort_by: 'lato_user_id|ASC',
-    #     pagination: true
-    #   )
-    # end
-
-    # def new_member
-    #   @space_member = @space.lato_space_members.new
-    # end
-
-    # def create_member
-    #   @space_member = @space.lato_space_members.new(space_member_params.merge(
-    #     lato_user_creator_id: @session.user_id
-    #   ))
-    #   return render :new_member, status: :unprocessable_entity unless @space_member.save
-
-    #   redirect_to lato_spaces.members_space_path(@space), notice: 'Member correctly created.'
-    # end
-
-    # def reinvite_member
-    #   return redirect_to lato_spaces.members_space_path(@space_member.lato_space_id), status: :unprocessable_entity unless @space_member.lato_invitation
-    #   return redirect_to lato_spaces.members_space_path(@space_member.lato_space_id), status: :unprocessable_entity, alert: @space_member.lato_invitation.errors.full_messages.to_sentence unless @space_member.lato_invitation.send_invite
-
-    #   redirect_to lato_spaces.members_space_path(@space_member.lato_space_id), notice: 'Member correctly reinvited.'
-    # end
-
-    # def remove_member
-    #   @space_member.destroy
-    #   redirect_to lato_spaces.members_space_path(@space_member.lato_space_id), notice: 'Member correctly removed.'
-    # end
+    def members_destroy_action
+      respond_to do |format|
+        if @space_member.destroy
+          format.html { redirect_to lato_spaces.spaces_members_path(@space), notice: 'Member was successfully removed.' }
+          format.json { render json: @space_member }
+        else
+          format.html { redirect_to lato_spaces.spaces_members_path(@space), status: :unprocessable_entity, alert: @space_member.errors.full_messages.to_sentence }
+          format.json { render json: @space_member.errors, status: :unprocessable_entity }
+        end
+      end
+    end
 
     private
 

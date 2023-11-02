@@ -31,9 +31,9 @@ module LatoSpaces
     def lato_spaces_space_member_actions(space_member)
       content_tag(:div, class: 'btn-group btn-group-sm') do
         if space_member.lato_invitation
-          concat link_to('Resend', lato_spaces.reinvite_member_space_path(space_member), class: 'btn btn-primary', data: { turbo_method: :post })
+          concat link_to('Resend', lato_spaces.spaces_members_send_invite_action_path(space_member), class: 'btn btn-primary', data: { turbo_method: :post })
         end
-        concat link_to('Remove', lato_spaces.remove_member_space_path(space_member), class: 'btn btn-danger', data: { turbo_confirm: 'Are you sure?', turbo_method: :delete, turbo_frame: '_top' })
+        concat link_to('Remove', lato_spaces.spaces_members_destroy_action_path(space_member), class: 'btn btn-danger', data: { turbo_confirm: 'Are you sure?', turbo_method: :delete, turbo_frame: '_top' })
       end
     end
   end
