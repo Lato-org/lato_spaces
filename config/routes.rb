@@ -1,5 +1,6 @@
 LatoSpaces::Engine.routes.draw do
   root 'application#index'
+  post 'setgroup/:id', to: 'application#setgroup', as: :setgroup
 
   scope :groups do
     get '', to: 'groups#index', as: :groups

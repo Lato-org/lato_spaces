@@ -5,7 +5,7 @@
 <%= turbo_frame_tag 'index' do %>
   <div class="row">
     <% @groups.each do |group| %>
-      <% is_selected = false %>
+      <% is_selected = @session.get(:spaces_group_id)&.to_i == group.id %>
 
       <div class="col col-12 col-md-6 col-lg-4 col-xl-3 mb-3">
         <div class="card h-100 border border-4 <%= is_selected ? 'border-success' : 'border-light' %>">
@@ -19,7 +19,7 @@
                     <i class="bi bi-gear"></i>
                   <% end %>
                 <% end %>
-                <%= link_to '#', class: "btn btn-#{is_selected ? 'success' : 'primary'} btn-sm ms-1" do %>
+                <%= link_to lato_spaces.setgroup_path(group), class: "btn btn-#{is_selected ? 'success' : 'primary'} btn-sm ms-1", data: { turbo_method: :post } do %>
                   <i class="bi bi-check-circle<%= is_selected ? '-fill' : '' %>"></i>
                 <% end %>
               </div>
