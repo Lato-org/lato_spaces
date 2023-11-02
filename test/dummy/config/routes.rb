@@ -3,4 +3,6 @@ Rails.application.routes.draw do
   mount LatoSpaces::Engine => "/adm/spaces"
 
   root 'application#index'
+
+  get 'protected', to: 'application#protected', as: :protected
 end

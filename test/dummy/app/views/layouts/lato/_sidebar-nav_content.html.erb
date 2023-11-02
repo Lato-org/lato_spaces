@@ -1,3 +1,9 @@
-<%= lato_sidebar_nav_item :lato_spaces, lato_spaces.root_path do %>
-  Spaces
+<% if @session.user.lato_spaces_admin %>
+  <%= lato_sidebar_nav_item :lato_spaces, lato_spaces.root_path do %>
+    Spaces
+  <% end %>
+<% end %>
+
+<%= lato_sidebar_nav_item :protected, main_app.protected_path do %>
+  Protected
 <% end %>

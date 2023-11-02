@@ -1,5 +1,5 @@
 <%= lato_page_head 'New membership', [
-  { label: 'Spaces' },
+  { label: 'Spaces', path: lato_spaces.root_path },
   { label: 'Groups', path: lato_spaces.groups_path },
   { label: @group.name, path: lato_spaces.groups_show_path(@group) }
 ] %>

@@ -5,7 +5,7 @@ module LatoSpaces
     before_action { active_sidebar(:lato_spaces) }
 
     def index
-      redirect_to lato_spaces.groups_path
+      @groups = LatoSpaces::Group.joins(:lato_spaces_memberships).where(lato_spaces_memberships: { lato_user_id: @session.user_id }).order(name: :asc)
     end
 
     protected
