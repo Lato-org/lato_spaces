@@ -1,0 +1,15 @@
+<%= lato_page_head 'Groups' %>
+
+<div class="card">
+  <div class="card-body">
+    <%= lato_index @groups,
+      custom_actions: {
+        create: {
+          path: lato_spaces.groups_create_path,
+          icon: 'bi bi-plus',
+          data: { lato_action_target: 'trigger', turbo_frame: dom_id(LatoSpaces::Group.new, 'form'), action_title: 'New group' }
+        }
+      }
+    %>
+  </div>
+</div>

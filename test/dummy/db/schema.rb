@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_11_01_103121) do
+ActiveRecord::Schema[7.1].define(version: 2023_11_02_082236) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -82,25 +82,21 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_01_103121) do
     t.index ["lato_user_id"], name: "index_lato_operations_on_lato_user_id"
   end
 
-  create_table "lato_space_members", force: :cascade do |t|
-    t.integer "lato_space_id"
-    t.integer "lato_user_id"
-    t.integer "lato_invitation_id"
-    t.integer "lato_user_creator_id"
+  create_table "lato_spaces_groups", force: :cascade do |t|
+    t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["lato_invitation_id"], name: "index_lato_space_members_on_lato_invitation_id"
-    t.index ["lato_space_id"], name: "index_lato_space_members_on_lato_space_id"
-    t.index ["lato_user_creator_id"], name: "index_lato_space_members_on_lato_user_creator_id"
-    t.index ["lato_user_id"], name: "index_lato_space_members_on_lato_user_id"
   end
 
-  create_table "lato_spaces", force: :cascade do |t|
-    t.string "name"
-    t.integer "lato_user_creator_id"
+  create_table "lato_spaces_memberships", force: :cascade do |t|
+    t.integer "lato_spaces_group_id"
+    t.integer "lato_user_id"
+    t.integer "lato_invitation_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["lato_user_creator_id"], name: "index_lato_spaces_on_lato_user_creator_id"
+    t.index ["lato_invitation_id"], name: "index_lato_spaces_memberships_on_lato_invitation_id"
+    t.index ["lato_spaces_group_id"], name: "index_lato_spaces_memberships_on_lato_spaces_group_id"
+    t.index ["lato_user_id"], name: "index_lato_spaces_memberships_on_lato_user_id"
   end
 
   create_table "lato_users", force: :cascade do |t|
@@ -114,7 +110,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_01_103121) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "locale"
-    t.boolean "lato_spaces_access", default: false
+    t.boolean "lato_spaces_admin", default: false
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
@@ -124,9 +120,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_01_103121) do
   add_foreign_key "lato_log_user_signins", "lato_users"
   add_foreign_key "lato_log_user_signups", "lato_users"
   add_foreign_key "lato_operations", "lato_users"
-  add_foreign_key "lato_space_members", "lato_invitations"
-  add_foreign_key "lato_space_members", "lato_spaces"
-  add_foreign_key "lato_space_members", "lato_users"
-  add_foreign_key "lato_space_members", "lato_users", column: "lato_user_creator_id"
-  add_foreign_key "lato_spaces", "lato_users", column: "lato_user_creator_id"
+  add_foreign_key "lato_spaces_memberships", "lato_invitations"
+  add_foreign_key "lato_spaces_memberships", "lato_spaces_groups"
+  add_foreign_key "lato_spaces_memberships", "lato_users"
 end

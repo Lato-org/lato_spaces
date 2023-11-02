@@ -1,7 +1,7 @@
 require "test_helper"
 
 module LatoSpaces
-  class SpaceMemberTest < ActiveSupport::TestCase
+  class GroupTest < ActiveSupport::TestCase
     # test "the truth" do
     #   assert true
     # end
