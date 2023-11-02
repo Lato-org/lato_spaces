@@ -18,7 +18,7 @@ module LatoSpaces
 
     scope :lato_index_order, ->(column, order) do
       return left_joins(:lato_user, :lato_invitation).order("lato_users.last_name #{order}, lato_users.first_name #{order}, lato_users.email #{order}, lato_invitations.email #{order}") if column == :lato_user_id
-  
+
       order("#{column} #{order}")
     end
   

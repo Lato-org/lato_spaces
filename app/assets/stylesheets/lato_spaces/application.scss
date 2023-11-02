@@ -1,3 +1,10 @@
 .controller-spaces .lato-index-desk-col-value-actions {
   width: 225px;
+  text-align: right;
+}
+
+.controller-spaces .lato-index-desk-col-label-actions {
+  > div {
+    justify-content: flex-end;
+  }
 }
