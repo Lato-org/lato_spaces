@@ -1,0 +1,11 @@
+<%= lato_page_head 'New membership', [
+  { label: 'Spaces' },
+  { label: 'Groups', path: lato_spaces.groups_path },
+  { label: @group.name, path: lato_spaces.groups_show_path(@group) }
+] %>
+
+<div class="card">
+  <div class="card-body">
+    <%= render "form", membership: @membership %>
+  </div>
+</div>

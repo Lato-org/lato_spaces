@@ -5,7 +5,7 @@ module LatoSpaces
     # Relations
     ##
 
-    has_many :lato_space_memberships, class_name: 'LatoSpaces::Membership', dependent: :destroy
+    has_many :lato_spaces_memberships, class_name: 'LatoSpaces::Membership', foreign_key: 'lato_spaces_group_id', dependent: :destroy
 
     # Validations
     ##

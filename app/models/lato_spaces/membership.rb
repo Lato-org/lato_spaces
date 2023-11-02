@@ -1,13 +1,27 @@
 module LatoSpaces
   class Membership < ApplicationRecord
     attr_accessor :email
+    attr_accessor :user_infos, :actions # lato index
 
     # Relations
     ##
 
-    belongs_to :lato_space_group, class_name: 'LatoSpaces::Group', foreign_key: 'lato_spaces_group_id'
+    belongs_to :lato_spaces_group, class_name: 'LatoSpaces::Group', foreign_key: 'lato_spaces_group_id'
     belongs_to :lato_user, class_name: 'Lato::User', optional: true
     belongs_to :lato_invitation, class_name: 'Lato::Invitation', optional: true
+
+    # Scopes
+    ##
+
+    scope :lato_index_order, ->(column, order) do
+      return left_joins(:lato_user, :lato_invitation).order("lato_users.last_name #{order}, lato_users.first_name #{order}, lato_users.email #{order}, lato_invitations.email #{order}") if column == :user_infos
+
+      order("#{column} #{order}")
+    end
+  
+    scope :lato_index_search, ->(search) do
+      left_joins(:lato_user, :lato_invitation).where("lower(lato_users.first_name) LIKE :search OR lower(lato_users.last_name) LIKE :search OR lower(lato_users.email) LIKE :search OR lower(lato_invitations.email) LIKE :search", search: "%#{search.downcase.strip}%")
+    end
 
     # Hooks
     ##
@@ -20,7 +34,7 @@ module LatoSpaces
           self.lato_user_id = user.id
         else
           invitation = Lato::Invitation.find_by_email(email)
-          invitation ||= Lato::Invitation.create(email: email, inviter_lato_user_id: lato_user_creator_id)
+          invitation ||= Lato::Invitation.create(email: email)
           unless invitation
             errors.add(:email, 'There was an error with the invitation.')
             throw(:abort)
@@ -50,6 +64,33 @@ module LatoSpaces
     # listen Lato::User destroy event to destroy memberships
     Lato::User.after_destroy do |user|
       LatoSpaces::Membership.where(lato_user_id: user.id).destroy_all
+    end
+
+    # Helpers
+    ##
+
+    def user_infos_label
+      return lato_user.full_name if lato_user.present?
+      return lato_invitation.email if lato_invitation.present?
+      'Unknown'
+    end
+
+    # Operations
+    ##
+
+    def send_invite
+      if lato_invitation.blank? || lato_user.present?
+        errors.add(:base, 'This user is already a member of this space.')
+        return false
+      end
+
+      result = lato_invitation.send_invite
+      unless result
+        errors.add(:base, lato_invitation.errors.full_messages.to_sentence)
+        return false
+      end
+
+      true
     end
   end
 end

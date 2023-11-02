@@ -5,6 +5,10 @@
         td:not(:last-child), th:not(:last-child) {
           width: 99%;
         }
+
+        td:last-child {
+          text-align: right;
+        }
       }
     }
   }
