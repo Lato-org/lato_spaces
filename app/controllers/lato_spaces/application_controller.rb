@@ -4,7 +4,7 @@ module LatoSpaces
 
     layout 'lato/application'
     before_action :authenticate_session
-    before_action { active_sidebar(:lato_spaces) }
+    before_action { active_sidebar(:lato_spaces); active_navbar(:lato_spaces) }
 
     def index
       @groups = LatoSpaces::Group.joins(:lato_spaces_memberships).where(lato_spaces_memberships: { lato_user_id: @session.user_id }).order(name: :asc)
@@ -24,7 +24,7 @@ module LatoSpaces
 
     protected
 
-    def authenticate_lato_spaces_aadmin
+    def authenticate_lato_spaces_admin
       return true if @session.user.lato_spaces_admin
 
       redirect_to lato.root_path, alert: 'You have not access to this section.'

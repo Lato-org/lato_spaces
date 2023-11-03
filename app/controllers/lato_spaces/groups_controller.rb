@@ -1,5 +1,6 @@
 module LatoSpaces
   class GroupsController < ApplicationController
+    before_action :authenticate_lato_spaces_admin
     before_action :find_group, only: %i[show update update_action destroy_action]
 
     def index

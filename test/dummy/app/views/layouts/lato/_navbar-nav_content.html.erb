@@ -1,4 +1,9 @@
 <% if @session.valid? %>
+  <% if @session.user.lato_spaces_admin %>
+    <%= lato_navbar_nav_item :lato_spaces, lato_spaces.root_path do %>
+      Spaces
+    <% end %>
+  <% end %>
   <%= lato_navbar_nav_item :account, lato.account_path do %>
     <%= I18n.t('lato.account') %>
   <% end %>

@@ -1,0 +1,7 @@
+<%= lato_page_head 'Documentation' do %>
+  <p class="lead">
+    This is an example of a protected page.<br>
+    Only logged in users with a selected group can access it.<br>
+    Currently you are logged in as <strong><%= @session.user.email %></strong> and you are in the group <strong><%= @session.get(:spaces_group_id) %></strong>.
+  </p>
+<% end %>

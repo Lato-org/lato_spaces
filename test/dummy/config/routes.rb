@@ -4,5 +4,5 @@ Rails.application.routes.draw do
 
   root 'application#index'
 
-  get 'protected', to: 'application#protected', as: :protected
+  get 'documentation', to: 'application#documentation', as: :documentation
 end
