@@ -11,9 +11,11 @@ module LatoSpaces
     end
 
     def setgroup
+      success_redirect_path = LatoSpaces.config.setgroup_redirect_path ? Rails.application.routes.url_helpers.send(LatoSpaces.config.setgroup_redirect_path) : lato_spaces.root_path
+
       respond_to do |format|
         if session_group_create(params[:id])
-          format.html { redirect_to lato_spaces.root_path }
+          format.html { redirect_to success_redirect_path }
           format.json { render json: {} }
         else
           format.html { redirect_to lato_spaces.root_path, alert: 'Error on changing group.' }
