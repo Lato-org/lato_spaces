@@ -117,10 +117,8 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_10_163722) do
     t.string "code"
     t.integer "status"
     t.integer "lato_user_id"
-    t.integer "lato_spaces_group_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["lato_spaces_group_id"], name: "index_products_on_lato_spaces_group_id"
     t.index ["lato_user_id"], name: "index_products_on_lato_user_id"
   end
 
@@ -134,6 +132,5 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_10_163722) do
   add_foreign_key "lato_spaces_memberships", "lato_invitations"
   add_foreign_key "lato_spaces_memberships", "lato_spaces_groups"
   add_foreign_key "lato_spaces_memberships", "lato_users"
-  add_foreign_key "products", "lato_spaces_groups"
   add_foreign_key "products", "lato_users"
 end

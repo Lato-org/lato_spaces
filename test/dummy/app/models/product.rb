@@ -12,7 +12,6 @@ class Product < ApplicationRecord
   ##
 
   belongs_to :lato_user, class_name: 'Lato::User'
-  belongs_to :lato_spaces_group, class_name: 'LatoSpaces::Group'
 
   # Scopes
   ##
