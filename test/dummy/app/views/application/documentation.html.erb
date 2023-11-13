@@ -5,3 +5,57 @@
     Currently you are logged in as <strong><%= @session.user.email %></strong> and you are in the group <strong><%= @session.get(:spaces_group_id) %></strong>.
   </p>
 <% end %>
+
+<h2>Come utilizzare la gemma</h2>
+
+<p>
+Dopo l''installazione della gemma importare il concern <code>LatoSpaces::Groupable</code> nel controller principale dell'applicazione:
+</p>
+
+<pre>
+class ApplicationController < Lato::ApplicationController
+  include LatoSpaces::Groupable
+
+  # ...
+end
+</pre>
+
+<p>
+Per richiedere la selezione di un gruppo prima di eseguire una action basta richiamare la funzione del concern <code>authenticate_group</code>.<br>
+Nel caso in cui un gruppo sia stato selezionato, è possibile accedere al suo id tramite la funzione <code>get(:spaces_group_id)</code> di <code>@session</code>.
+</p>
+
+<pre>
+class ApplicationController < Lato::ApplicationController
+  include LatoSpaces::Groupable
+
+  def index
+    return unless authenticate_group
+
+    lato_spaces_group_id = @session.get(:spaces_group_id)
+  end
+end
+</pre>
+
+<div class="alert alert-info mt-3">
+  <h4 class="alert-heading">Note</h4>
+  <p>
+  In alternativa è possibile richiamare la funzione <code>authenticate_group</code> in un <code>before_action</code> del controller.
+  </p>
+  <p>
+<pre>
+class ApplicationController < Lato::ApplicationController
+  include LatoSpaces::Groupable
+  before_action :authenticate_group
+
+  def index
+    lato_spaces_group_id = @session.get(:spaces_group_id)
+  end
+end
+</pre>
+  </p>
+</div>
+
+<h3>Utilizzo sui modelli</h3>
+
+...
