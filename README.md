@@ -25,7 +25,7 @@ Mount lato spaces routes on the **config/routes.rb** file:
 
 ```ruby
 Rails.application.routes.draw do
-  mount Lato::Engine => "/lato-spaces"
+  mount LatoSpaces::Engine => "/lato-spaces"
 
   # ....
 end
