@@ -3,6 +3,34 @@ Integrate different workspaces on Lato projects.
 
 NOTE: This project is under development.
 
+## Installation
+Add required dependencies to your application's Gemfile:
+
+```ruby
+# Use lato as application panel
+gem "lato"
+gem "lato_spaces"
+```
+
+Install gem and run required tasks:
+
+```bash
+$ bundle
+$ rails lato_spaces:install:application
+$ rails lato_spaces:install:migrations
+$ rails db:migrate
+```
+
+Mount lato spaces routes on the **config/routes.rb** file:
+
+```ruby
+Rails.application.routes.draw do
+  mount Lato::Engine => "/lato-spaces"
+
+  # ....
+end
+```
+
 ## Todo
 
 ### Manage models relations with spaces groups
