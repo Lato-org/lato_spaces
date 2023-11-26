@@ -1,5 +1,1 @@
 en:
-  activerecord:
-    attributes:
-      lato_spaces/membership:
-        user_infos: User

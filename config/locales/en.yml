@@ -1,0 +1,8 @@
+en:
+  lato_spaces:
+    space: Space
+    spaces: Spaces
+  activerecord:
+    attributes:
+      lato_spaces/membership:
+        user_infos: User
