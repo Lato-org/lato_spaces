@@ -10,9 +10,6 @@ module LatoSpaces
     # Icon of the group (bootstrap icon).
     attr_accessor :group_icon
 
-    # Create a default group on user creation.
-    attr_accessor :create_default_group, :create_default_group_name
-
     # Permit creation of groups for users.
     attr_accessor :permit_group_creation
 
@@ -22,8 +19,6 @@ module LatoSpaces
     def initialize
       @setgroup_redirect_path = nil
       @group_icon = 'bi bi-people-fill'
-      @create_default_group = false
-      @create_default_group_name = 'Personal'
       @permit_group_creation = false
       @permit_group_management = false
     end
