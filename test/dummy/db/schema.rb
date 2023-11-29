@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_11_10_163722) do
+ActiveRecord::Schema[7.1].define(version: 2023_11_29_183145) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -82,6 +82,16 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_10_163722) do
     t.index ["lato_user_id"], name: "index_lato_operations_on_lato_user_id"
   end
 
+  create_table "lato_spaces_associations", force: :cascade do |t|
+    t.integer "lato_spaces_group_id"
+    t.string "item_type", null: false
+    t.integer "item_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["item_type", "item_id"], name: "index_lato_spaces_associations_on_item"
+    t.index ["lato_spaces_group_id"], name: "index_lato_spaces_associations_on_lato_spaces_group_id"
+  end
+
   create_table "lato_spaces_groups", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -129,6 +139,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_10_163722) do
   add_foreign_key "lato_log_user_signins", "lato_users"
   add_foreign_key "lato_log_user_signups", "lato_users"
   add_foreign_key "lato_operations", "lato_users"
+  add_foreign_key "lato_spaces_associations", "lato_spaces_groups"
   add_foreign_key "lato_spaces_memberships", "lato_invitations"
   add_foreign_key "lato_spaces_memberships", "lato_spaces_groups"
   add_foreign_key "lato_spaces_memberships", "lato_users"

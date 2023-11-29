@@ -1,4 +1,8 @@
 class Product < ApplicationRecord
+  include LatoSpaces::Associable
+  include LatoSpaces::AssociableRequired
+  include LatoSpaces::AssociableUnique
+
   enum status: {
     created: 0,
     in_progress: 1,
