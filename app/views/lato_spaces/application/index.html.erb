@@ -1,5 +1,5 @@
 <%= lato_page_head I18n.t('lato_spaces.spaces') do %>
-  <p class="lead">Hi <b><%= @session.user.first_name %></b>! Please <b>select the group</b> you want to work on.</p>
+  <p class="lead"><%= raw I18n.t('lato_spaces.welcome', user: @session.user.first_name) %></p>
 <% end %>
 
 <%= turbo_frame_tag 'index' do %>
@@ -35,7 +35,7 @@
           <div class="card-body d-flex flex-column justify-content-center align-items-center">
             <div class="text-center">
               <i class="bi bi-sliders fs-1"></i><br>
-              <span class="fw-bold">Manage groups</span>
+              <span class="fw-bold"><%= I18n.t('lato_spaces.cta_manage_groups') %></span>
             </div>
           </div>
         <% end %>

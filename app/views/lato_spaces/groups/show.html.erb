@@ -1,13 +1,13 @@
 <%= lato_page_head @group.name, [
   { label: I18n.t('lato_spaces.spaces'), path: lato_spaces.root_path },
-  { label: 'Groups', path: lato_spaces.groups_path }
+  { label: I18n.t('lato_spaces.groups'), path: lato_spaces.groups_path }
 ] %>
 
 <div class="card mb-4">
   <div class="card-header d-flex justify-content-between align-items-center">
-    <h2 class="fs-4 mb-0">Group informations</h2>
+    <h2 class="fs-4 mb-0"><%= I18n.t('lato_spaces.group_informations') %></h2>
     <div class="btn-group btn-group-sm" role="group">
-      <%= link_to 'Edit', lato_spaces.groups_update_path(@group), class: 'btn btn-primary', data: { lato_action_target: 'trigger', turbo_frame: dom_id(@group, 'form'), action_title: 'Edit group' } %>
+      <%= link_to 'Edit', lato_spaces.groups_update_path(@group), class: 'btn btn-primary', data: { lato_action_target: 'trigger', turbo_frame: dom_id(@group, 'form'), action_title: I18n.t('lato_spaces.edit_group') } %>
       <%= link_to 'Delete', lato_spaces.groups_destroy_action_path(@group), class: 'btn btn-danger', data: { turbo_confirm: 'Are you sure?', turbo_method: :delete } %>
     </div>
   </div>
@@ -18,7 +18,7 @@
 
 <div class="card mb-4">
   <div class="card-header">
-    <h2 class="fs-4 mb-0">Group memberships</h2>
+    <h2 class="fs-4 mb-0"><%= I18n.t('lato_spaces.group_members') %></h2>
   </div>
   <div class="card-body">
     <%= lato_index @memberships,

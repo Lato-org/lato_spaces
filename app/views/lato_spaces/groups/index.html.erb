@@ -1,4 +1,4 @@
-<%= lato_page_head 'Groups', [
+<%= lato_page_head I18n.t('lato_spaces.groups'), [
   { label: I18n.t('lato_spaces.spaces'), path: lato_spaces.root_path }
 ] %>
 
@@ -9,7 +9,7 @@
         create: {
           path: lato_spaces.groups_create_path,
           icon: 'bi bi-plus',
-          data: { lato_action_target: 'trigger', turbo_frame: dom_id(LatoSpaces::Group.new, 'form'), action_title: 'New group' }
+          data: { lato_action_target: 'trigger', turbo_frame: dom_id(LatoSpaces::Group.new, 'form'), action_title: I18n.t('lato_spaces.new_group') }
         }
       }
     %>
