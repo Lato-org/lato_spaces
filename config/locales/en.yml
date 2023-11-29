@@ -10,6 +10,7 @@ en:
     edit_group: Edit group
     group_members: Group members
     group_informations: Group informations
+    cta_new_group: Create new group
   activerecord:
     attributes:
       lato_spaces/membership:

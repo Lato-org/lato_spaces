@@ -31,5 +31,19 @@ module LatoSpaces
 
       redirect_to lato.root_path, alert: 'You have not access to this section.'
     end
+
+    def authenticate_lato_spaces_creation
+      return true if LatoSpaces.config.permit_group_creation
+      return true if @session.user.lato_spaces_admin
+
+      redirect_to lato_spaces.root_path, alert: 'You have not access to this section.'
+    end
+
+    def authenticate_lato_spaces_management
+      return true if LatoSpaces.config.permit_group_management
+      return true if @session.user.lato_spaces_admin
+
+      redirect_to lato_spaces.root_path, alert: 'You have not access to this section.'
+    end
   end
 end
