@@ -11,3 +11,31 @@ Lato::User.create!(
   lato_spaces_admin: true
 )
 puts 'Default lato user created successfully!'
+
+10.times do
+  group = LatoSpaces::Group.create!(
+    name: 'Default group'
+  )
+  group.lato_spaces_memberships.create!(
+    lato_user_id: Lato::User.first.id
+  )
+end
+
+10.times do
+  product = Product.create!
+  if [true, false].sample
+    product.add_to_group LatoSpaces::Group.all.sample.id
+    product.add_to_group LatoSpaces::Group.all.sample.id
+  end
+end
+
+10.times do
+  ProductRequired.create!(lato_spaces_group_id: LatoSpaces::Group.all.sample.id)
+end
+
+10.times do
+  product = ProductUnique.create!
+  if [true, false].sample
+    product.add_to_group LatoSpaces::Group.all.sample.id
+  end
+end
