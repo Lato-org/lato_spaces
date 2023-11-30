@@ -7,7 +7,7 @@ module LatoSpaces::AssociableUnique
 
     # listen LatoSpaces::Association create event to avoid duplicate associations
     LatoSpaces::Association.before_create do |association|
-      if association.item_type == self.class.name && association.item_id == id && lato_spaces_associations.count.positive?
+      if association.item&.lato_spaces_associations&.length&.positive?
         throw(:abort)
       end
     end

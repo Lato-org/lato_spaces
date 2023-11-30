@@ -21,10 +21,7 @@ module LatoSpaces::AssociableRequired
 
     # listen LatoSpaces::Association destroy event to destroy item
     LatoSpaces::Association.after_destroy do |association|
-      if lato_spaces_associations.find_by_id association.id
-        self.destroy!
-      end
+      association.item&.destroy!
     end
   end
 end
-    
