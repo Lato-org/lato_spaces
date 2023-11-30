@@ -15,11 +15,11 @@
               <span class="fw-bold"><%= group.name %></span>
               <div class="d-flex justify-content-center align-items-center mt-2">
                 <% if @session.user.lato_spaces_admin || LatoSpaces.config.permit_group_management %>
-                  <%= link_to lato_spaces.groups_show_path(group), class: "btn btn-light btn-sm me-1", data: { turbo_frame: '_top' } do %>
+                  <%= link_to lato_spaces.groups_show_path(group), class: "btn btn-light me-1", data: { turbo_frame: '_top' } do %>
                     <i class="bi bi-gear"></i>
                   <% end %>
                 <% end %>
-                <%= link_to lato_spaces.setgroup_path(group), class: "btn btn-#{is_selected ? 'success' : 'primary'} btn-sm ms-1", data: { turbo_method: :post } do %>
+                <%= link_to lato_spaces.setgroup_path(group), class: "btn btn-#{is_selected ? 'success' : 'primary'} ms-1", data: { turbo_method: :post } do %>
                   <i class="bi bi-check-circle<%= is_selected ? '-fill' : '' %>"></i>
                 <% end %>
               </div>
