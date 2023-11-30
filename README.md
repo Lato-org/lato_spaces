@@ -50,3 +50,26 @@ end
 ### Tests
 
 - [ ] Add tests for model concerns
+
+## Development
+
+Clone repository, install dependencies, run migrations and start:
+
+```shell
+$ git clone https://github.com/Lato-GAM/lato_spaces
+$ cd lato_spaces
+$ bundle
+$ rails db:migrate
+$ rails db:seed
+$ foreman start -f Procfile.dev
+```
+
+## Publish
+
+```shell
+$ ruby ./bin/publish.rb
+```
+
+## License
+The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+
