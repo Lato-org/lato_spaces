@@ -58,4 +58,14 @@ end
 
 <h3>Utilizzo sui modelli</h3>
 
-...
+<p>
+Qualsiasi modello può essere associato al gruppo utilizzando il concern <code>LatoSpaces::Associable</code>:
+</p>
+
+<pre>
+class Product < ApplicationRecord
+  include LatoSpaces::Associable
+  
+  # ...
+end
+</pre>
