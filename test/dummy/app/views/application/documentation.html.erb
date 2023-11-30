@@ -59,12 +59,58 @@ end
 <h3>Utilizzo sui modelli</h3>
 
 <p>
-Qualsiasi modello può essere associato al gruppo utilizzando il concern <code>LatoSpaces::Associable</code>:
+Qualsiasi modello può essere associato a uno o più gruppi utilizzando il concern <code>LatoSpaces::Associable</code>:
 </p>
 
 <pre>
 class Product < ApplicationRecord
   include LatoSpaces::Associable
+  
+  # ...
+end
+</pre>
+
+<p>
+Attraverso il concern è possibile avere accesso a tutte le funzioni di associazione:
+</p>
+
+<pre>
+product = Product.all.first
+product.lato_spaces_groups # lista di gruppi associati al prodotto
+product.add_to_group(1) # aggiunge il prodotto al gruppo con id 1
+product.remove_from_group(1) # rimuove il prodotto dal gruppo con id 1
+product.switch_group(1) # rimuove il prodotto dal primo gruppo e lo aggiunge al gruppo con id 1
+
+Product.for_lato_spaces_group(1) # restituisce tutti i prodotti associati al gruppo con id 1
+Product.with_lato_spaces_groups # restituisce tutti i prodotti associati ad almeno un gruppo
+Product.without_lato_spaces_groups # restituisce tutti i prodotti non associati a nessun gruppo
+</pre>
+
+<p>
+Attraverso il concern <code>LatoSpaces::AssociableRequired</code> è possibile richiedere che un modello sia sempre associato ad almeno un gruppo.<br>
+Il concern obbliga il passaggio del parametro <code>:lato_spaces_group_ids</code> al momento della creazione del modello.<br>
+In assenza del parametro la creazione del modello fallirà.
+</p>
+
+<pre>
+class Product < ApplicationRecord
+  include LatoSpaces::Associable
+  include LatoSpaces::AssociableRequired
+  
+  # ...
+end
+
+product = Product.create(name: 'Product 1', lato_spaces_group_id: 1)
+</pre>
+
+<p>
+Attraverso il concern <code>LatoSpaces::AssociableUnique</code> è possibile richiedere che un modello sia associato ad un solo gruppo.
+</p>
+
+<pre>
+class Product < ApplicationRecord
+  include LatoSpaces::Associable
+  include LatoSpaces::AssociableUnique
   
   # ...
 end
