@@ -16,7 +16,7 @@ module LatoSpaces::Associable
     scope :without_lato_spaces_groups, -> { left_outer_joins(:lato_spaces_groups).where(lato_spaces_groups: { id: nil }) }
   end
 
-  def add_to_group(group_id)
+  def add_to_lato_spaces_group(group_id)
     association = lato_spaces_associations.create(lato_spaces_group_id: group_id)
     unless association.valid?
       errors.add(:base, association.errors.full_messages.join(', '))
@@ -26,7 +26,7 @@ module LatoSpaces::Associable
     true
   end
 
-  def remove_from_group(group_id)
+  def remove_from_lato_spaces_group(group_id)
     association = lato_spaces_associations.find_by(lato_spaces_group_id: group_id)
     return true unless association
 
@@ -38,9 +38,9 @@ module LatoSpaces::Associable
     true
   end
 
-  def switch_group(group_id)
+  def switch_lato_spaces_group(group_id)
     association = lato_spaces_associations.first
-    return add_to_group(group_id) unless association
+    return add_to_lato_spaces_group(group_id) unless association
 
     unless association.update(lato_spaces_group_id: group_id)
       errors.add(:base, association.errors.full_messages.join(', '))
@@ -48,5 +48,9 @@ module LatoSpaces::Associable
     end
 
     true
-  end 
+  end
+
+  def lato_spaces_group
+    lato_spaces_groups.first
+  end
 end

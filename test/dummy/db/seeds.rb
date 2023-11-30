@@ -24,8 +24,8 @@ end
 10.times do
   product = Product.create!
   if [true, false].sample
-    product.add_to_group LatoSpaces::Group.all.sample.id
-    product.add_to_group LatoSpaces::Group.all.sample.id
+    product.add_to_lato_spaces_group LatoSpaces::Group.all.sample.id
+    product.add_to_lato_spaces_group LatoSpaces::Group.all.sample.id
   end
 end
 
@@ -36,6 +36,6 @@ end
 10.times do
   product = ProductUnique.create!
   if [true, false].sample
-    product.add_to_group LatoSpaces::Group.all.sample.id
+    product.add_to_lato_spaces_group LatoSpaces::Group.all.sample.id
   end
 end
