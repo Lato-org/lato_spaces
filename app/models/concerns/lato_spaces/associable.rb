@@ -16,6 +16,20 @@ module LatoSpaces::Associable
     scope :without_lato_spaces_groups, -> { left_outer_joins(:lato_spaces_groups).where(lato_spaces_groups: { id: nil }) }
   end
 
+  # Helpers
+  ##
+
+  def lato_spaces_group
+    @lato_spaces_group ||= lato_spaces_groups.first
+  end
+
+  def lato_spaces_group_id
+    @lato_spaces_group_id ||= lato_spaces_group.try(:id)
+  end
+
+  # Operations
+  ##
+
   def add_to_lato_spaces_group(group_id)
     association = lato_spaces_associations.create(lato_spaces_group_id: group_id)
     unless association.valid?
@@ -48,9 +62,5 @@ module LatoSpaces::Associable
     end
 
     true
-  end
-
-  def lato_spaces_group
-    lato_spaces_groups.first
   end
 end
