@@ -7,12 +7,14 @@
     <% @groups.each do |group| %>
       <% is_selected = @session.get(:spaces_group_id)&.to_i == group.id %>
 
-      <div class="col col-12 col-md-6 col-lg-4 col-xl-3 mb-3">
+      <div class="col col-12 col-lg-6 col-lg-4 col-xl-3 mb-3">
         <div class="card h-100 border border-4 <%= is_selected ? 'border-success' : 'border-light' %>">
-          <div class="card-body d-flex flex-column justify-content-center align-items-center">
-            <div class="text-center">
-              <i class="<%= LatoSpaces.config.group_icon %> fs-1"></i><br>
-              <span class="fw-bold"><%= group.name %></span>
+          <div class="card-body">
+            <div class="d-flex align-items-center justify-content-between d-lg-block">
+              <div class="d-flex align-items-center d-lg-block text-center">
+                <i class="<%= LatoSpaces.config.group_icon %> fs-1 me-2 me-lg-0"></i><br>
+                <span class="fw-bold"><%= group.name %></span>
+              </div>
               <div class="d-flex justify-content-center align-items-center mt-2">
                 <% if @session.user.lato_spaces_admin || LatoSpaces.config.permit_group_management %>
                   <%= link_to lato_spaces.groups_show_path(group), class: "btn btn-light me-1", data: { turbo_frame: '_top' } do %>
@@ -30,7 +32,7 @@
     <% end %>
 
     <% if @session.user.lato_spaces_admin %>
-      <div class="col col-12 col-md-6 col-lg-4 col-xl-3 mb-3">
+      <div class="col col-12 col-lg-6 col-lg-4 col-xl-3 mb-3">
         <%= link_to lato_spaces.groups_path, class: 'card border border-4 border-primary bg-primary text-white text-decoration-none h-100' do %>
           <div class="card-body d-flex flex-column justify-content-center align-items-center">
             <div class="text-center">
@@ -41,7 +43,7 @@
         <% end %>
       </div>
     <% elsif LatoSpaces.config.permit_group_creation %>
-      <div class="col col-12 col-md-6 col-lg-4 col-xl-3 mb-3">
+      <div class="col col-12 col-lg-6 col-lg-4 col-xl-3 mb-3">
         <%= link_to lato_spaces.groups_create_path, class: 'card border border-4 border-primary bg-primary text-white text-decoration-none h-100', data: { lato_action_target: 'trigger', turbo_frame: dom_id(LatoSpaces::Group.new, 'form'), action_title: I18n.t('lato_spaces.new_group') } do %>
           <div class="card-body d-flex flex-column justify-content-center align-items-center">
             <div class="text-center">
