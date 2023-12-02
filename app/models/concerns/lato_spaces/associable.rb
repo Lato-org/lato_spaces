@@ -5,7 +5,7 @@ module LatoSpaces::Associable
     # Relations
     ##
 
-    has_many :lato_spaces_associations, class_name: 'LatoSpaces::Association', as: :item, dependent: :destroy
+    has_many :lato_spaces_associations, class_name: 'LatoSpaces::Association', as: :item, dependent: :nullify
     has_many :lato_spaces_groups, through: :lato_spaces_associations, class_name: 'LatoSpaces::Group'
 
     # Scopes
@@ -14,6 +14,13 @@ module LatoSpaces::Associable
     scope :for_lato_spaces_group, -> (group_id) { joins(:lato_spaces_groups).where(lato_spaces_groups: { id: group_id }) }
     scope :with_lato_spaces_groups, -> { joins(:lato_spaces_groups) }
     scope :without_lato_spaces_groups, -> { left_outer_joins(:lato_spaces_groups).where(lato_spaces_groups: { id: nil }) }
+
+    # Hooks
+    ##
+
+    after_destroy do
+      lato_spaces_associations.map(&:delete) # HACK: delete instead of destroy to avoid infinite loop caused by AssociableRequired concern
+    end
   end
 
   # Helpers
