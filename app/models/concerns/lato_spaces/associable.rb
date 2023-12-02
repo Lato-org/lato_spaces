@@ -5,7 +5,7 @@ module LatoSpaces::Associable
     # Relations
     ##
 
-    has_many :lato_spaces_associations, class_name: 'LatoSpaces::Association', as: :item, dependent: :delete # HACK: delete instead of destroy to avoid infinite loop caused by AssociableRequired concern
+    has_many :lato_spaces_associations, class_name: 'LatoSpaces::Association', as: :item, dependent: :delete_all # HACK: delete_all instead of destroy to avoid infinite loop caused by AssociableRequired concern
     has_many :lato_spaces_groups, through: :lato_spaces_associations, class_name: 'LatoSpaces::Group'
 
     # Scopes
