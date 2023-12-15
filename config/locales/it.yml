@@ -1,0 +1,28 @@
+it:
+  lato_spaces:
+    space: Space
+    spaces: Spaces
+    group: Gruppo
+    groups: Gruppi
+    welcome: Ciao <b>%{user}</b>!<b> Seleziona il gruppo</b> con cui vuoi lavorare.
+    cta_manage_groups: Gestisci gruppi
+    new_group: Nuovo gruppo
+    edit_group: Modifica gruppo
+    group_members: Membri del gruppo
+    group_informations: Informazioni del gruppo
+    cta_new_group: Crea nuovo gruppo
+    cta_view: Visualizza
+    cta_confirm: Conferma
+    cta_update: Aggiorna
+    cta_edit: Modifica
+    cta_delete: Cancella
+    cta_resend: Reinvia
+    new_membership: Nuova iscrizione
+  activerecord:
+    attributes:
+      lato_spaces/group:
+        name: Nome
+        actions: Azioni
+      lato_spaces/membership:
+        user_infos: Utente
+        actions: Azioni

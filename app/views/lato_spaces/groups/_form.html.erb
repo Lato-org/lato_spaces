@@ -11,7 +11,7 @@
     <%= render 'layouts/lato_spaces/group-form-extra_content', form: form %>
 
     <div class="d-flex justify-content-end">
-      <%= lato_form_submit form, group.persisted? ? 'Update' : 'Confirm', class: %w[btn-success] %>
+      <%= lato_form_submit form, group.persisted? ? I18n.t('lato_spaces.cta_update') : I18n.t('lato_spaces.cta_confirm'), class: %w[btn-success] %>
     </div>
   <% end %>
 <% end %>

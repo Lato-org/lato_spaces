@@ -1,6 +1,6 @@
-<%= lato_page_head 'New membership', [
+<%= lato_page_head I18n.t('lato_spaces.new_membership'), [
   { label: I18n.t('lato_spaces.spaces'), path: lato_spaces.root_path },
-  { label: 'Groups', path: lato_spaces.groups_path },
+  { label: I18n.t('lato_spaces.groups'), path: lato_spaces.groups_path },
   { label: @group.name, path: lato_spaces.groups_show_path(@group) }
 ] %>
 
