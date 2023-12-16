@@ -78,6 +78,15 @@ module LatoSpaces
     # Operations
     ##
 
+    def set_preferred
+      ActiveRecord::Base.transaction do
+        LatoSpaces::Membership.where(lato_user_id: lato_user_id).update_all(preferred: false)
+        update!(preferred: true)
+      end
+
+      true
+    end
+
     def send_invite
       if lato_invitation.blank? || lato_user.present?
         errors.add(:base, 'This user is already a member of this space.')

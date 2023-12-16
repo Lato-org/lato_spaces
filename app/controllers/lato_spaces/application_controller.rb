@@ -7,6 +7,7 @@ module LatoSpaces
     before_action { active_sidebar(:lato_spaces); active_navbar(:lato_spaces) }
 
     def index
+      @memberships = LatoSpaces::Membership.where(lato_user_id: @session.user_id).order(created_at: :desc)
       @groups = LatoSpaces::Group.joins(:lato_spaces_memberships).where(lato_spaces_memberships: { lato_user_id: @session.user_id }).order(name: :asc)
     end
 
@@ -20,6 +21,20 @@ module LatoSpaces
         else
           format.html { redirect_to lato_spaces.root_path, alert: 'Error on changing group.' }
           format.json { render json: { error: 'Error on changing group.' }, status: :unprocessable_entity }
+        end
+      end
+    end
+
+    def setpreferred
+      membership = LatoSpaces::Membership.find_by(lato_user_id: @session.user_id, lato_spaces_group_id: params[:id])
+
+      respond_to do |format|
+        if membership&.set_preferred
+          format.html { redirect_to lato_spaces.root_path }
+          format.json { render json: {} }
+        else
+          format.html { redirect_to lato_spaces.root_path, alert: 'Error on changing preferred group.' }
+          format.json { render json: { error: 'Error on changing preferred group.' }, status: :unprocessable_entity }
         end
       end
     end

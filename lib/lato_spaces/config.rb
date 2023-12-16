@@ -18,6 +18,9 @@ module LatoSpaces
 
     # Permit management of groups for users.
     attr_accessor :permit_group_management
+
+    # Permit users to choose a preferred group.
+    attr_accessor :permit_group_preferred
     
     def initialize
       @setgroup_redirect_path = nil
@@ -25,6 +28,7 @@ module LatoSpaces
       @group_params = %i[name]
       @permit_group_creation = false
       @permit_group_management = false
+      @permit_group_preferred = false
     end
   end
 end

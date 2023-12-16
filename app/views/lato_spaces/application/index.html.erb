@@ -6,6 +6,7 @@
   <div class="row">
     <% @groups.each do |group| %>
       <% is_selected = @session.get(:spaces_group_id)&.to_i == group.id %>
+      <% is_preferred = @memberships.find { |m| m.lato_spaces_group_id == group.id }&.preferred %>
 
       <div class="col col-12 col-lg-6 col-lg-4 col-xl-3 mb-3">
         <div class="card h-100 border border-4 <%= is_selected ? 'border-success' : 'border-light' %>">
@@ -21,6 +22,13 @@
                     <i class="bi bi-gear"></i>
                   <% end %>
                 <% end %>
+
+                <% if LatoSpaces.config.permit_group_preferred %>
+                  <%= link_to lato_spaces.setpreferred_path(group), class: "btn btn-#{is_preferred ? 'warning' : 'light'} ms-1 me-1", data: { turbo_method: :post } do %>
+                    <i class="bi bi-star<%= is_preferred ? '-fill' : '' %>"></i>
+                  <% end %>
+                <% end %>
+
                 <%= link_to lato_spaces.setgroup_path(group), class: "btn btn-#{is_selected ? 'success' : 'primary'} ms-1", data: { turbo_method: :post } do %>
                   <i class="bi bi-check-circle<%= is_selected ? '-fill' : '' %>"></i>
                 <% end %>

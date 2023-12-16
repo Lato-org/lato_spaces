@@ -8,4 +8,5 @@ end
 LatoSpaces.configure do |config|
   config.permit_group_creation = true
   config.permit_group_management = true
+  config.permit_group_preferred = true
 end
