@@ -1,7 +1,7 @@
 module LatoSpaces::AssociableRequired
   extend ActiveSupport::Concern
 
-  attr_accessor :lato_spaces_group_id
+  attr_writer :lato_spaces_group_id
 
   included do
     # Validates
