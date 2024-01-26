@@ -1,8 +1,6 @@
 # Lato Spaces
 Integrate different workspaces on Lato projects.
 
-NOTE: This project is under development.
-
 ## Installation
 Add required dependencies to your application's Gemfile:
 
