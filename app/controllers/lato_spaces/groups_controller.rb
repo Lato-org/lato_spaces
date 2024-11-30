@@ -73,6 +73,9 @@ module LatoSpaces
 
     def destroy_action
       respond_to do |format|
+        # deselect group if is selected before destroy
+        session_group_destroy if @session.get(:spaces_group_id) == @group.id
+
         if @group.destroy
           redirect = lato_spaces.groups_path
           redirect = lato_spaces.root_path unless @session.user.lato_spaces_admin

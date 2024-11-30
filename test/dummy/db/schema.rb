@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_12_15_220127) do
+ActiveRecord::Schema[7.1].define(version: 2024_11_30_102735) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -122,6 +122,9 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_15_220127) do
     t.datetime "updated_at", null: false
     t.string "locale"
     t.boolean "lato_spaces_admin", default: false
+    t.string "web3_address"
+    t.string "authenticator_secret"
+    t.index ["email"], name: "index_lato_users_on_email", unique: true
   end
 
   create_table "product_requireds", force: :cascade do |t|
