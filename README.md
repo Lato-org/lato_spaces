@@ -54,7 +54,7 @@ end
 Clone repository, install dependencies, run migrations and start:
 
 ```shell
-$ git clone https://github.com/Lato-GAM/lato_spaces
+$ git clone https://github.com/Lato-org/lato_spaces
 $ cd lato_spaces
 $ bundle
 $ rails db:migrate
