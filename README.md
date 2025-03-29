@@ -29,6 +29,13 @@ Rails.application.routes.draw do
 end
 ```
 
+Import Lato Scss on **app/assets/stylesheets/application.scss** file:
+```scss
+@import 'lato_spaces/application';
+
+// ....
+```
+
 Import Lato Spaces Js on **app/javascript/application.js** file:
 ```js
 import "lato_spaces/application";
