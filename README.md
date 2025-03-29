@@ -29,6 +29,13 @@ Rails.application.routes.draw do
 end
 ```
 
+Import Lato Spaces Js on **app/javascript/application.js** file:
+```js
+import "lato_spaces/application";
+
+// ....
+```
+
 ## Todo
 
 ### Manage models relations with spaces groups

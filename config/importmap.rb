@@ -1,0 +1,1 @@
+pin "lato_spaces/application", to: "lato_spaces/application.js"
