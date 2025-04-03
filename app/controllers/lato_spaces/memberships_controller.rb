@@ -52,7 +52,7 @@ module LatoSpaces
     private
 
     def membership_params
-      params.require(:membership).permit(:email)
+      params.require(:membership).permit(LatoSpaces.config.membership_params)
     end
 
     def find_group
