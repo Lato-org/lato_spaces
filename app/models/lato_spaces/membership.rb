@@ -1,5 +1,7 @@
 module LatoSpaces
   class Membership < ApplicationRecord
+    include LatoSpacesMembershipApplication
+
     attr_accessor :email
     attr_accessor :user_infos, :actions # lato index
 

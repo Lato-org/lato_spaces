@@ -1,0 +1,18 @@
+<%
+
+group ||= LatoSpaces::Group.new
+
+%>
+
+<table class="table">
+  <tbody>
+    <tr>
+      <th>Total members</th>
+      <td><%= group.lato_spaces_memberships.count %></td>
+    </tr>
+    <tr>
+      <th>Total items</th>
+      <td><%= group.lato_spaces_associations.count %></td>
+    </tr>
+  </tbody>
+</table>
