@@ -16,10 +16,10 @@ module LatoSpaces
     # Params of the membership.
     attr_accessor :membership_params
 
-    # Permit creation of groups for users.
+    # Permit creation of groups for users (not admins).
     attr_accessor :permit_group_creation
 
-    # Permit management of groups for users.
+    # Permit management of groups for users (not admins).
     attr_accessor :permit_group_management
 
     # Permit users to choose a preferred group.
