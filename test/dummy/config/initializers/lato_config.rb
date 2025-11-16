@@ -6,6 +6,8 @@ Lato.configure do |config|
 end
 
 LatoSpaces.configure do |config|
+  config.setgroup_auto_after_login_if_single = true
+  config.setgroup_redirect_path = :documentation_path
   config.permit_group_creation = true
   config.permit_group_management = true
   config.permit_group_preferred = true

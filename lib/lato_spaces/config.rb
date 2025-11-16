@@ -7,6 +7,14 @@ module LatoSpaces
     # Path of the redirect after set group.
     attr_accessor :setgroup_redirect_path
 
+    # Auto-select first group after login.
+    # NOTE: Requires to set `setgroup_redirect_path` to work properly.
+    attr_accessor :setgroup_auto_after_login
+
+    # Auto-select first group after login only if user has a single group.
+    # NOTE: Requires to set `setgroup_redirect_path` to work properly.
+    attr_accessor :setgroup_auto_after_login_if_single
+
     # Icon of the group (bootstrap icon).
     attr_accessor :group_icon
 
@@ -27,6 +35,8 @@ module LatoSpaces
     
     def initialize
       @setgroup_redirect_path = nil
+      @setgroup_auto_after_login = false
+      @setgroup_auto_after_login_if_single = false
       @group_icon = 'bi bi-people-fill'
       @group_params = %i[name]
       @membership_params = %i[email]

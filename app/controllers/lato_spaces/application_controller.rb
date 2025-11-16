@@ -9,6 +9,22 @@ module LatoSpaces
     def index
       @memberships = LatoSpaces::Membership.where(lato_user_id: @session.user_id).order(created_at: :desc)
       @groups = LatoSpaces::Group.joins(:lato_spaces_memberships).where(lato_spaces_memberships: { lato_user_id: @session.user_id }).order(name: :asc)
+
+      if LatoSpaces.config.setgroup_auto_after_login_if_single && LatoSpaces.config.setgroup_redirect_path && @session.get(:spaces_group_id).blank? && @groups.size == 1
+        group_id = @groups.first&.id
+        if group_id && session_group_create(group_id)
+          redirect_to Rails.application.routes.url_helpers.send(LatoSpaces.config.setgroup_redirect_path)
+          return
+        end
+      end
+
+      if LatoSpaces.config.setgroup_auto_after_login && LatoSpaces.config.setgroup_redirect_path && @session.get(:spaces_group_id).blank?
+        group_id = @groups.first&.id
+        if group_id && session_group_create(group_id)
+          redirect_to Rails.application.routes.url_helpers.send(LatoSpaces.config.setgroup_redirect_path)
+          return
+        end
+      end
     end
 
     def setgroup
