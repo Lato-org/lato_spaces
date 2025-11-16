@@ -1,3 +1,3 @@
 module LatoSpaces
-  VERSION = "3.1.22"
+  VERSION = "3.1.23"
 end
