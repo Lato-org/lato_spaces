@@ -6,10 +6,10 @@
   </p>
 <% end %>
 
-<h2>Come utilizzare la gemma</h2>
+<h2>How to use the gem</h2>
 
 <p>
-Dopo l''installazione della gemma importare il concern <code>LatoSpaces::Groupable</code> nel controller principale dell'applicazione:
+After installing the gem, import the <code>LatoSpaces::Groupable</code> concern in the main application controller:
 </p>
 
 <pre>
@@ -21,8 +21,8 @@ end
 </pre>
 
 <p>
-Per richiedere la selezione di un gruppo prima di eseguire una action basta richiamare la funzione del concern <code>authenticate_group</code>.<br>
-Nel caso in cui un gruppo sia stato selezionato, è possibile accedere al suo id tramite la funzione <code>get(:spaces_group_id)</code> di <code>@session</code>.
+To require group selection before executing an action, simply call the <code>authenticate_group</code> concern function.<br>
+If a group has been selected, you can access its id via the <code>get(:spaces_group_id)</code> function of <code>@session</code>.
 </p>
 
 <pre>
@@ -38,9 +38,9 @@ end
 </pre>
 
 <div class="alert alert-info mt-3">
-  <h4 class="alert-heading">Note</h4>
+  <h4 class="alert-heading">Notes</h4>
   <p>
-  In alternativa è possibile richiamare la funzione <code>authenticate_group</code> in un <code>before_action</code> del controller.
+  Alternatively, you can call the <code>authenticate_group</code> function in a controller <code>before_action</code>.
   </p>
   <p>
 <pre>
@@ -56,10 +56,10 @@ end
   </p>
 </div>
 
-<h3>Utilizzo sui modelli</h3>
+<h3>Usage on models</h3>
 
 <p>
-Qualsiasi modello può essere associato a uno o più gruppi utilizzando il concern <code>LatoSpaces::Associable</code>:
+Any model can be associated with one or more groups using the <code>LatoSpaces::Associable</code> concern:
 </p>
 
 <pre>
@@ -71,25 +71,25 @@ end
 </pre>
 
 <p>
-Attraverso il concern è possibile avere accesso a tutte le funzioni di associazione:
+Through the concern, you can access all association functions:
 </p>
 
 <pre>
 product = Product.all.first
-product.lato_spaces_groups # lista di gruppi associati al prodotto
-product.add_to_lato_spaces_group(1) # aggiunge il prodotto al gruppo con id 1
-product.remove_from_lato_spaces_group(1) # rimuove il prodotto dal gruppo con id 1
-product.switch_lato_spaces_group(1) # rimuove il prodotto dal primo gruppo e lo aggiunge al gruppo con id 1
+product.lato_spaces_groups # list of groups associated with the product
+product.add_to_lato_spaces_group(1) # adds the product to the group with id 1
+product.remove_from_lato_spaces_group(1) # removes the product from the group with id 1
+product.switch_lato_spaces_group(1) # removes the product from the first group and adds it to the group with id 1
 
-Product.for_lato_spaces_group(1) # restituisce tutti i prodotti associati al gruppo con id 1
-Product.with_lato_spaces_groups # restituisce tutti i prodotti associati ad almeno un gruppo
-Product.without_lato_spaces_groups # restituisce tutti i prodotti non associati a nessun gruppo
+Product.for_lato_spaces_group(1) # returns all products associated with the group with id 1
+Product.with_lato_spaces_groups # returns all products associated with at least one group
+Product.without_lato_spaces_groups # returns all products not associated with any group
 </pre>
 
 <p>
-Attraverso il concern <code>LatoSpaces::AssociableRequired</code> è possibile richiedere che un modello sia sempre associato ad almeno un gruppo.<br>
-Il concern obbliga il passaggio del parametro <code>:lato_spaces_group_ids</code> al momento della creazione del modello.<br>
-In assenza del parametro la creazione del modello fallirà.
+Through the <code>LatoSpaces::AssociableRequired</code> concern, you can require that a model is always associated with at least one group.<br>
+The concern enforces passing the <code>:lato_spaces_group_ids</code> parameter when creating the model.<br>
+Without the parameter, model creation will fail.
 </p>
 
 <pre>
@@ -104,7 +104,7 @@ product = Product.create(name: 'Product 1', lato_spaces_group_id: 1)
 </pre>
 
 <p>
-Attraverso il concern <code>LatoSpaces::AssociableUnique</code> è possibile richiedere che un modello sia associato ad un solo gruppo.
+Through the <code>LatoSpaces::AssociableUnique</code> concern, you can require that a model is associated with only one group.
 </p>
 
 <pre>
