@@ -12,9 +12,9 @@ Lato::User.create!(
 )
 puts 'Default lato user created successfully!'
 
-10.times do
+10.times do |index|
   group = LatoSpaces::Group.create!(
-    name: 'Default group'
+    name: "Group #{index + 1}"
   )
   group.lato_spaces_memberships.create!(
     lato_user_id: Lato::User.first.id

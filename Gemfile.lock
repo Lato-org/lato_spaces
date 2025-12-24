@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    lato_spaces (3.1.23)
+    lato_spaces (3.1.24)
       lato
       rails (>= 7.1.1)
 

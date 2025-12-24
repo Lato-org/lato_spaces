@@ -3,35 +3,49 @@
 <% end %>
 
 <%= turbo_frame_tag 'index' do %>
-  <div class="row">
-    <% @groups.each do |group| %>
-      <% is_selected = @session.get(:spaces_group_id)&.to_i == group.id %>
-      <% is_preferred = @memberships.find { |m| m.lato_spaces_group_id == group.id }&.preferred %>
+  <%
 
+    groups = @groups.map do |group|
+      is_selected = @session.get(:spaces_group_id)&.to_i == group.id
+      is_preferred = @memberships.find { |m| m.lato_spaces_group_id == group.id }&.preferred
+
+      {
+        id: group.id,
+        name: group.name,
+        is_selected: is_selected,
+        is_preferred: is_preferred
+      }
+    end
+
+    groups = groups.sort_by { |g| [g[:is_preferred] ? 0 : 1, g[:name].downcase] }
+  %>
+
+  <div class="row">
+    <% groups.each do |group| %>
       <div class="col col-12 col-lg-6 col-lg-4 col-xl-3 mb-3">
-        <div class="card h-100 border border-4 position-relative <%= is_selected ? 'border-success' : 'border-light' %>">
-          <%= link_to lato_spaces.setgroup_path(group), class: "position-absolute top-0 left-0 w-100 h-100", data: { turbo_method: :post } do %><% end %>
+        <div class="card h-100 border border-4 position-relative <%= group[:is_selected] ? 'border-success' : 'border-light' %>">
+          <%= link_to lato_spaces.setgroup_path(group[:id]), class: "position-absolute top-0 left-0 w-100 h-100", data: { turbo_method: :post } do %><% end %>
           <div class="card-body">
             <div class="d-flex align-items-center justify-content-between d-lg-block">
               <div class="d-flex align-items-center d-lg-block text-center">
                 <i class="<%= LatoSpaces.config.group_icon %> fs-1 me-2 me-lg-0"></i><br>
-                <span class="fw-bold"><%= group.name %></span>
+                <span class="fw-bold"><%= group[:name] %></span>
               </div>
               <div class="d-flex justify-content-center align-items-center mt-lg-2 position-relative">
                 <% if @session.user.lato_spaces_admin || LatoSpaces.config.permit_group_management %>
-                  <%= link_to lato_spaces.groups_show_path(group), class: "btn btn-light me-1", data: { turbo_frame: '_top' } do %>
+                  <%= link_to lato_spaces.groups_show_path(group[:id]), class: "btn btn-light me-1", data: { turbo_frame: '_top' } do %>
                     <i class="bi bi-gear"></i>
                   <% end %>
                 <% end %>
 
                 <% if LatoSpaces.config.permit_group_preferred %>
-                  <%= link_to lato_spaces.setpreferred_path(group), class: "btn btn-#{is_preferred ? 'warning' : 'light'} ms-1 me-1", data: { turbo_method: :post } do %>
-                    <i class="bi bi-star<%= is_preferred ? '-fill' : '' %>"></i>
+                  <%= link_to lato_spaces.setpreferred_path(group[:id]), class: "btn btn-#{group[:is_preferred] ? 'warning' : 'light'} ms-1 me-1", data: { turbo_method: :post } do %>
+                    <i class="bi bi-star<%= group[:is_preferred] ? '-fill' : '' %>"></i>
                   <% end %>
                 <% end %>
 
-                <%= link_to lato_spaces.setgroup_path(group), class: "btn btn-#{is_selected ? 'success' : 'primary'} ms-1", data: { turbo_method: :post } do %>
-                  <i class="bi bi-check-circle<%= is_selected ? '-fill' : '' %>"></i>
+                <%= link_to lato_spaces.setgroup_path(group[:id]), class: "btn btn-#{group[:is_selected] ? 'success' : 'primary'} ms-1", data: { turbo_method: :post } do %>
+                  <i class="bi bi-check-circle<%= group[:is_selected] ? '-fill' : '' %>"></i>
                 <% end %>
               </div>
             </div>
