@@ -1,4 +1,4 @@
-<%= lato_page_head 'Documentation' do %>
+<%= lato_page_head "Documentation" do %>
   <p class="lead">
     This is an example of a protected page.<br>
     Only logged in users with a selected group can access it.<br>
@@ -6,112 +6,376 @@
   </p>
 <% end %>
 
-<h2>How to use the gem</h2>
+<h2>How to use Lato Spaces</h2>
 
 <p>
-After installing the gem, import the <code>LatoSpaces::Groupable</code> concern in the main application controller:
+  <code>lato_spaces</code> is a Rails engine for adding workspace/group selection to a Lato application.
+  Users can belong to one or more groups, select the active group in the session, and scope application records to that group.
 </p>
 
-<pre>
-class ApplicationController < Lato::ApplicationController
-  include LatoSpaces::Groupable
+<h3>Installation</h3>
+
+<p>Add Lato and Lato Spaces to the application Gemfile:</p>
+
+<pre><code>gem "lato"
+gem "lato_spaces"</code></pre>
+
+<p>Install dependencies, copy engine files, install migrations, and migrate the database:</p>
+
+<pre><code>bundle
+rails lato_spaces:install:application
+rails lato_spaces:install:migrations
+rails db:migrate</code></pre>
+
+<p>Mount the engine in <code>config/routes.rb</code>:</p>
+
+<pre><code>Rails.application.routes.draw do
+  mount LatoSpaces::Engine =&gt; "/lato-spaces"
 
   # ...
-end
-</pre>
+end</code></pre>
 
-<p>
-To require group selection before executing an action, simply call the <code>authenticate_group</code> concern function.<br>
-If a group has been selected, you can access its id via the <code>get(:spaces_group_id)</code> function of <code>@session</code>.
-</p>
+<p>Import styles in <code>app/assets/stylesheets/application.scss</code>:</p>
 
-<pre>
-class ApplicationController < Lato::ApplicationController
-  include LatoSpaces::Groupable
+<pre><code>@import "lato_spaces/application";</code></pre>
 
-  def index
-    return unless authenticate_group
+<p>Import JavaScript in <code>app/javascript/application.js</code>:</p>
 
-    lato_spaces_group_id = @session.get(:spaces_group_id)
-  end
-end
-</pre>
+<pre><code>import "lato_spaces/application"</code></pre>
 
 <div class="alert alert-info mt-3">
-  <h4 class="alert-heading">Notes</h4>
+  <h4 class="alert-heading">Install task output</h4>
   <p>
-  Alternatively, you can call the <code>authenticate_group</code> function in a controller <code>before_action</code>.
-  </p>
-  <p>
-<pre>
-class ApplicationController < Lato::ApplicationController
-  include LatoSpaces::Groupable
-  before_action :authenticate_group
-
-  def index
-    lato_spaces_group_id = @session.get(:spaces_group_id)
-  end
-end
-</pre>
+    <code>rails lato_spaces:install:application</code> copies overridable partials to
+    <code>app/views/layouts/lato_spaces</code> and copies
+    <code>app/models/concerns/lato_spaces_membership_application.rb</code> into the host application.
   </p>
 </div>
 
+<h3>Configuration</h3>
+
+<p>Create or update a Lato initializer:</p>
+
+<pre><code>LatoSpaces.configure do |config|
+  config.setgroup_redirect_path = :dashboard_path
+  config.setgroup_auto_after_login = false
+  config.setgroup_auto_after_login_if_single = true
+
+  config.group_icon = "bi bi-people-fill"
+  config.group_params = %i[name]
+  config.membership_params = %i[email]
+
+  config.permit_group_creation = false
+  config.permit_group_management = false
+  config.permit_group_preferred = false
+end</code></pre>
+
+<div class="table-responsive">
+  <table class="table table-striped align-middle">
+    <thead>
+      <tr>
+        <th>Option</th>
+        <th>Default</th>
+        <th>Purpose</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>setgroup_redirect_path</code></td>
+        <td><code>nil</code></td>
+        <td>Named route called after selecting a group. Example: <code>:dashboard_path</code>.</td>
+      </tr>
+      <tr>
+        <td><code>setgroup_auto_after_login</code></td>
+        <td><code>false</code></td>
+        <td>Automatically selects the first available group when the user enters the Spaces root.</td>
+      </tr>
+      <tr>
+        <td><code>setgroup_auto_after_login_if_single</code></td>
+        <td><code>false</code></td>
+        <td>Automatically selects the group only when the user has exactly one group.</td>
+      </tr>
+      <tr>
+        <td><code>group_icon</code></td>
+        <td><code>"bi bi-people-fill"</code></td>
+        <td>Bootstrap Icons class used for groups.</td>
+      </tr>
+      <tr>
+        <td><code>group_params</code></td>
+        <td><code>%i[name]</code></td>
+        <td>Strong parameters allowed when creating/updating groups.</td>
+      </tr>
+      <tr>
+        <td><code>membership_params</code></td>
+        <td><code>%i[email]</code></td>
+        <td>Strong parameters allowed when creating memberships.</td>
+      </tr>
+      <tr>
+        <td><code>permit_group_creation</code></td>
+        <td><code>false</code></td>
+        <td>Allows non-admin users to create groups.</td>
+      </tr>
+      <tr>
+        <td><code>permit_group_management</code></td>
+        <td><code>false</code></td>
+        <td>Allows non-admin users to manage their groups and memberships.</td>
+      </tr>
+      <tr>
+        <td><code>permit_group_preferred</code></td>
+        <td><code>false</code></td>
+        <td>Allows users to mark one membership group as preferred.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h3>Admin and permissions</h3>
+
+<p>
+  The migrations add <code>lato_spaces_admin</code> to <code>Lato::User</code>.
+  Admin users can list all groups and manage every group. Non-admin users can access only groups where they have a membership.
+</p>
+
+<pre><code>user = Lato::User.find_by(email: "admin@example.com")
+user.update!(lato_spaces_admin: true)</code></pre>
+
+<p>
+  Non-admin access to creation, management, and preferred group selection depends on the configuration flags shown above.
+</p>
+
+<h3>Protect controllers with selected group</h3>
+
+<p>Include <code>LatoSpaces::Groupable</code> in controllers that need group-aware access:</p>
+
+<pre><code>class ApplicationController &lt; Lato::ApplicationController
+  include LatoSpaces::Groupable
+
+  # ...
+end</code></pre>
+
+<p>
+  To require group selection before an action, call <code>authenticate_group</code>.
+  If no group is selected, the user is redirected to the Lato Spaces root.
+</p>
+
+<pre><code>class ProductsController &lt; ApplicationController
+  before_action :authenticate_session
+  before_action :authenticate_group
+
+  def index
+    group_id = @session.get(:spaces_group_id)
+    @products = Product.for_lato_spaces_group(group_id)
+  end
+end</code></pre>
+
+<p>The selected group id is stored in the Lato session payload:</p>
+
+<pre><code>group_id = @session.get(:spaces_group_id)</code></pre>
+
+<h3>Group selection flow</h3>
+
+<p>
+  The engine root lists groups available to the current user. Selecting a group calls
+  <code>POST /lato-spaces/setgroup/:id</code>, stores <code>spaces_group_id</code> in the encrypted Lato session cookie,
+  then redirects to <code>setgroup_redirect_path</code> if configured.
+</p>
+
+<pre><code># Deselect current group from application code
+session_group_destroy
+
+# Select group from application code
+session_group_create(group.id)</code></pre>
+
+<h3>Memberships and invitations</h3>
+
+<p>
+  A group has many memberships. A membership can reference either an existing <code>Lato::User</code>
+  or a pending <code>Lato::Invitation</code>.
+</p>
+
+<ul>
+  <li>If the membership email matches an existing user, the membership links to that user.</li>
+  <li>If no user exists, Lato Spaces creates or reuses a <code>Lato::Invitation</code>.</li>
+  <li>When an invitation is accepted, memberships are automatically moved from the invitation to the new user.</li>
+  <li>Destroying a Lato invitation or user removes related memberships.</li>
+</ul>
+
+<pre><code>group = LatoSpaces::Group.find(1)
+membership = group.lato_spaces_memberships.create!(email: "member@example.com")
+membership.send_invite if membership.lato_invitation.present?</code></pre>
+
+<p>Preferred group can be set from a membership:</p>
+
+<pre><code>membership.set_preferred</code></pre>
+
 <h3>Usage on models</h3>
 
-<p>
-Any model can be associated with one or more groups using the <code>LatoSpaces::Associable</code> concern:
-</p>
+<p>Any model can be associated with one or more groups using <code>LatoSpaces::Associable</code>:</p>
 
-<pre>
-class Product < ApplicationRecord
+<pre><code>class Product &lt; ApplicationRecord
   include LatoSpaces::Associable
-  
+
   # ...
-end
-</pre>
+end</code></pre>
+
+<p>Available associations, helpers, operations, and scopes:</p>
+
+<pre><code>product = Product.first
+
+product.lato_spaces_associations
+product.lato_spaces_groups
+product.lato_spaces_group
+product.lato_spaces_group_id
+
+product.add_to_lato_spaces_group(1)
+product.remove_from_lato_spaces_group(1)
+product.switch_lato_spaces_group(1)
+
+Product.for_lato_spaces_group(1)
+Product.with_lato_spaces_groups
+Product.without_lato_spaces_groups</code></pre>
+
+<h3>Require group association on create</h3>
 
 <p>
-Through the concern, you can access all association functions:
+  Add <code>LatoSpaces::AssociableRequired</code> when the model must always be created with a group.
+  The concern validates <code>lato_spaces_group_id</code> on create and creates the association after commit.
 </p>
 
-<pre>
-product = Product.all.first
-product.lato_spaces_groups # list of groups associated with the product
-product.add_to_lato_spaces_group(1) # adds the product to the group with id 1
-product.remove_from_lato_spaces_group(1) # removes the product from the group with id 1
-product.switch_lato_spaces_group(1) # removes the product from the first group and adds it to the group with id 1
-
-Product.for_lato_spaces_group(1) # returns all products associated with the group with id 1
-Product.with_lato_spaces_groups # returns all products associated with at least one group
-Product.without_lato_spaces_groups # returns all products not associated with any group
-</pre>
-
-<p>
-Through the <code>LatoSpaces::AssociableRequired</code> concern, you can require that a model is always associated with at least one group.<br>
-The concern enforces passing the <code>:lato_spaces_group_ids</code> parameter when creating the model.<br>
-Without the parameter, model creation will fail.
-</p>
-
-<pre>
-class Product < ApplicationRecord
+<pre><code>class Product &lt; ApplicationRecord
   include LatoSpaces::Associable
   include LatoSpaces::AssociableRequired
-  
+
   # ...
 end
 
-product = Product.create(name: 'Product 1', lato_spaces_group_id: 1)
-</pre>
+product = Product.create!(name: "Product 1", lato_spaces_group_id: 1)</code></pre>
+
+<div class="alert alert-warning mt-3">
+  <h4 class="alert-heading">Destroy behavior</h4>
+  <p>
+    With <code>AssociableRequired</code>, destroying a <code>LatoSpaces::Association</code> also destroys the associated item.
+    Use this concern only for records that should not exist outside a group.
+  </p>
+</div>
+
+<h3>Limit a model to one group</h3>
 
 <p>
-Through the <code>LatoSpaces::AssociableUnique</code> concern, you can require that a model is associated with only one group.
+  Add <code>LatoSpaces::AssociableUnique</code> when a record can belong to only one group.
+  The concern aborts creation of additional associations. Use <code>switch_lato_spaces_group</code> to move the record.
 </p>
 
-<pre>
-class Product < ApplicationRecord
+<pre><code>class Product &lt; ApplicationRecord
   include LatoSpaces::Associable
   include LatoSpaces::AssociableUnique
-  
+
   # ...
 end
-</pre>
+
+product.switch_lato_spaces_group(2)</code></pre>
+
+<h3>Recommended CRUD pattern</h3>
+
+<p>Filter lists by the selected group and assign new records to that group:</p>
+
+<pre><code>class ProductsController &lt; ApplicationController
+  before_action :authenticate_session
+  before_action :authenticate_group
+
+  def index
+    @products = Product.for_lato_spaces_group(@session.get(:spaces_group_id))
+  end
+
+  def create_action
+    @product = Product.new(product_params.merge(
+      lato_spaces_group_id: @session.get(:spaces_group_id)
+    ))
+
+    if @product.save
+      redirect_to products_path, notice: "Product created successfully"
+    else
+      render :create, status: :unprocessable_entity
+    end
+  end
+
+  private
+
+  def product_params
+    params.require(:product).permit(:name)
+  end
+end</code></pre>
+
+<h3>Customize groups, memberships, and layout content</h3>
+
+<p>The install task copies these partials into the host application:</p>
+
+<ul>
+  <li><code>app/views/layouts/lato_spaces/_group-informations_content.html.erb</code></li>
+  <li><code>app/views/layouts/lato_spaces/_group-form-extra_content.html.erb</code></li>
+  <li><code>app/views/layouts/lato_spaces/_membership-form-extra_content.html.erb</code></li>
+</ul>
+
+<p>
+  Edit those files to add custom information or fields to Lato Spaces pages.
+  If custom fields are added to group or membership forms, also extend
+  <code>group_params</code> or <code>membership_params</code> in the initializer.
+</p>
+
+<p>
+  The install task also copies <code>LatoSpacesMembershipApplication</code> into the host application.
+  Use it to add custom relations, scopes, validations, or helpers to all memberships.
+</p>
+
+<pre><code>module LatoSpacesMembershipApplication
+  extend ActiveSupport::Concern
+
+  included do
+    # Add custom validations, relations, or scopes here.
+  end
+
+  # Add custom methods here.
+end</code></pre>
+
+<h3>Engine routes</h3>
+
+<div class="table-responsive">
+  <table class="table table-striped align-middle">
+    <thead>
+      <tr>
+        <th>Route</th>
+        <th>Purpose</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>lato_spaces.root_path</code></td>
+        <td>Group selector for current user.</td>
+      </tr>
+      <tr>
+        <td><code>lato_spaces.setgroup_path(group)</code></td>
+        <td>Select active group in session.</td>
+      </tr>
+      <tr>
+        <td><code>lato_spaces.setpreferred_path(group)</code></td>
+        <td>Mark group as preferred for current user.</td>
+      </tr>
+      <tr>
+        <td><code>lato_spaces.groups_path</code></td>
+        <td>Admin groups index.</td>
+      </tr>
+      <tr>
+        <td><code>lato_spaces.groups_create_path</code></td>
+        <td>Group creation form.</td>
+      </tr>
+      <tr>
+        <td><code>lato_spaces.groups_show_path(group)</code></td>
+        <td>Group details and memberships.</td>
+      </tr>
+      <tr>
+        <td><code>lato_spaces.memberships_create_path(group)</code></td>
+        <td>Add member to group.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
