@@ -1,7 +1,11 @@
 # Lato Spaces
 Integrate different workspaces on Lato projects.
 
+Group selection requires a current membership. Every request protected by `authenticate_group` rechecks access and clears revoked selections. Users with `lato_spaces_admin` can select and manage all groups. When non-admin management is enabled, membership deletion and invitation resends are restricted to their own groups.
+
 ## Installation
+
+Requires Rails 8.1.3.1 or newer in the 8.1 series and Lato 3.25.0 or newer. Existing applications must install the new Lato session migration before deployment; previous sessions are invalidated.
 Add required dependencies to your application's Gemfile:
 
 ```ruby

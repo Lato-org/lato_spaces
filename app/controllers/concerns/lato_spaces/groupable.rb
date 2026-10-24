@@ -2,7 +2,9 @@ module LatoSpaces::Groupable
   extend ActiveSupport::Concern
 
   def authenticate_group
-    if @session.get(:spaces_group_id).blank?
+    group_id = @session.get(:spaces_group_id)
+    unless group_id.present? && accessible_spaces_groups.exists?(id: group_id)
+      session_group_destroy if group_id.present?
       redirect_to lato_spaces.root_path
       return false
     end
@@ -11,16 +13,22 @@ module LatoSpaces::Groupable
   end
 
   def session_group_create(group_id)
-    cookies.encrypted[:lato_session] = { value: Lato::Session.generate_session_per_user(@session.user_id, spaces_group_id: group_id), expires: Lato.config.session_lifetime.from_now }
-    @session = Lato::Session.new(cookies.encrypted[:lato_session])
+    group = accessible_spaces_groups.find_by(id: group_id)
+    return false unless group
 
-    true
+    session_update(spaces_group_id: group.id)
   end
 
   def session_group_destroy
-    cookies.encrypted[:lato_session] = { value: Lato::Session.generate_session_per_user(@session.user_id), expires: Lato.config.session_lifetime.from_now }
-    @session = Lato::Session.new(cookies.encrypted[:lato_session])
+    session_update(spaces_group_id: nil)
+  end
 
-    true
+  private
+
+  def accessible_spaces_groups
+    return LatoSpaces::Group.none unless @session.really_valid?
+    return LatoSpaces::Group.all if @session.user.lato_spaces_admin
+
+    LatoSpaces::Group.where(id: LatoSpaces::Membership.where(lato_user_id: @session.user_id).select(:lato_spaces_group_id))
   end
 end

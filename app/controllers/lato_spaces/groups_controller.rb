@@ -96,9 +96,7 @@ module LatoSpaces
     end
 
     def find_group
-      query = LatoSpaces::Group.all
-      query = query.joins(:lato_spaces_memberships).where(lato_spaces_memberships: { lato_user_id: @session.user_id }) unless @session.user.lato_spaces_admin
-      @group = query.find(params[:id])
+      @group = accessible_spaces_groups.find(params[:id])
     end
   end
 end

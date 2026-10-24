@@ -45,3 +45,9 @@ Users/admins can:
 - Keep Ruby strings double quoted.
 - Keep examples focused on group selection, permissions, and associating application data.
 - Do not touch `.DS_Store` files if present.
+
+## Security release baseline
+
+- Rails 8.1.3.1 or newer in the 8.1 series is required.
+- Run `ruby bin/publish.rb` from a named release branch after tests pass. It builds the exact version, commits changes, tags that commit, publishes to RubyGems, and pushes the branch and tag.
+- Applications using Active Storage with vips require libvips 8.13 or newer.
