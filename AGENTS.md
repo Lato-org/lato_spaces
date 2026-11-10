@@ -25,7 +25,9 @@ Users/admins can:
 - User-facing documentation lives in `test/dummy/app/views/application/documentation.html.erb`.
 - Keep that file updated whenever install steps, permissions, configuration, group behavior, associations, or usage changes.
 - Documentation should explain what the gem does, how to install it, and how to use it.
-- Avoid internal implementation details such as controller internals, route lists, private models, or database mechanics unless required for usage.
+- Keep `README.md` in sync with it (configuration table with defaults, permissions matrix, invitations, `Groupable` API, `Associable` scopes/methods).
+- Avoid internal implementation details such as controller internals, route lists, private models, or database mechanics unless required for usage. Always document destructive or surprising behavior (e.g. `AssociableRequired` destroying records).
+- Engine is mounted at `/lato-spaces` in docs and in the dummy app.
 
 ## Local setup
 
@@ -38,10 +40,14 @@ Users/admins can:
 ## Main commands
 
 - Run tests: `bin/rails test`.
+- Tests live in `test/`: `test/integration/security_test.rb` (tenant isolation), `test/integration/hardening_test.rb` (permissions, XSS, invitations, a11y markup), `test/models/lato_spaces/` (concerns and memberships). `test/dummy/test/` is not run by `bin/rails test`.
 - Publish gem: `ruby ./bin/publish.rb`.
 
 ## Agent notes
 
+- `AssociableRequired` / `AssociableUnique` are markers checked by `LatoSpaces::Association` per item: never register callbacks on `LatoSpaces::Association` from model concerns.
+- User-facing strings go in `config/locales/en.yml` and `it.yml` (keep both in sync).
+- `lato_page_head` renders the title raw: escape user data passed as title.
 - Keep Ruby strings double quoted.
 - Keep examples focused on group selection, permissions, and associating application data.
 - Do not touch `.DS_Store` files if present.

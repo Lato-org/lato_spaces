@@ -4,14 +4,14 @@ module LatoSpaces
   ##
   class Config
 
-    # Path of the redirect after set group.
+    # Name of a host route helper (no arguments) used as redirect after set group, e.g. :dashboard_path.
     attr_accessor :setgroup_redirect_path
 
-    # Auto-select first group after login.
+    # Auto-select preferred group (or first group by name) when the user opens the Spaces root page without a selected group.
     # NOTE: Requires to set `setgroup_redirect_path` to work properly.
     attr_accessor :setgroup_auto_after_login
 
-    # Auto-select first group after login only if user has a single group.
+    # Auto-select preferred group (or first group by name) when the user opens the Spaces root page without a selected group.only if user has a single group.
     # NOTE: Requires to set `setgroup_redirect_path` to work properly.
     attr_accessor :setgroup_auto_after_login_if_single
 

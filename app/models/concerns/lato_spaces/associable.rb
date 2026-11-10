@@ -5,7 +5,7 @@ module LatoSpaces::Associable
     # Relations
     ##
 
-    has_many :lato_spaces_associations, class_name: 'LatoSpaces::Association', as: :item, dependent: :delete_all # HACK: delete_all instead of destroy to avoid infinite loop caused by AssociableRequired concern
+    has_many :lato_spaces_associations, class_name: 'LatoSpaces::Association', as: :item, dependent: :delete_all # delete_all skips association callbacks, so destroying an AssociableRequired item does not loop
     has_many :lato_spaces_groups, through: :lato_spaces_associations, class_name: 'LatoSpaces::Group'
 
     # Scopes
@@ -32,18 +32,18 @@ module LatoSpaces::Associable
 
   def add_to_lato_spaces_group(group_id)
     association = lato_spaces_associations.create(lato_spaces_group_id: group_id)
-    unless association.valid?
-      errors.add(:base, association.errors.full_messages.join(', '))
-      return false
-    end
+    reset_lato_spaces_group_cache
+    return true if association.persisted?
 
-    true
+    errors.add(:base, association.errors.full_messages.join(', '))
+    false
   end
 
   def remove_from_lato_spaces_group(group_id)
     association = lato_spaces_associations.find_by(lato_spaces_group_id: group_id)
     return true unless association
 
+    reset_lato_spaces_group_cache
     unless association.destroy
       errors.add(:base, association.errors.full_messages.join(', '))
       return false
@@ -56,11 +56,20 @@ module LatoSpaces::Associable
     association = lato_spaces_associations.first
     return add_to_lato_spaces_group(group_id) unless association
 
+    reset_lato_spaces_group_cache
     unless association.update(lato_spaces_group_id: group_id)
       errors.add(:base, association.errors.full_messages.join(', '))
       return false
     end
 
     true
+  end
+
+  private
+
+  def reset_lato_spaces_group_cache
+    @lato_spaces_group = nil
+    @lato_spaces_group_id = nil
+    lato_spaces_groups.reset
   end
 end

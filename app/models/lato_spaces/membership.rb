@@ -3,6 +3,7 @@ module LatoSpaces
     include LatoSpacesMembershipApplication
 
     attr_accessor :email
+    attr_accessor :invitations_disabled # when true, unregistered emails are rejected instead of invited
     attr_accessor :user_infos, :actions # lato index
 
     # Relations
@@ -16,34 +17,58 @@ module LatoSpaces
     ##
 
     scope :lato_index_order, ->(column, order) do
-      return left_joins(:lato_user, :lato_invitation).order("lato_users.last_name #{order}, lato_users.first_name #{order}, lato_users.email #{order}, lato_invitations.email #{order}") if column == :user_infos
+      direction = order.to_s.casecmp?('desc') ? 'DESC' : 'ASC'
+      return left_joins(:lato_user, :lato_invitation).order(Arel.sql("lato_users.last_name #{direction}, lato_users.first_name #{direction}, lato_users.email #{direction}, lato_invitations.email #{direction}")) if column == :user_infos
 
-      order("#{column} #{order}")
+      order(column => direction)
     end
   
     scope :lato_index_search, ->(search) do
       left_joins(:lato_user, :lato_invitation).where("lower(lato_users.first_name) LIKE :search OR lower(lato_users.last_name) LIKE :search OR lower(lato_users.email) LIKE :search OR lower(lato_invitations.email) LIKE :search", search: "%#{search.downcase.strip}%")
     end
 
+    # Validations
+    ##
+
+    validate on: :create do
+      next if lato_user_id.present? || lato_invitation_id.present?
+
+      if email.blank?
+        errors.add(:email, :blank)
+      elsif invitations_disabled
+        errors.add(:email, :invitation_not_permitted)
+      end
+    end
+
+    validate on: :create do
+      group_memberships = LatoSpaces::Membership.where(lato_spaces_group_id: lato_spaces_group_id)
+      taken = (lato_user_id.present? && group_memberships.exists?(lato_user_id: lato_user_id)) ||
+              (lato_invitation_id.present? && group_memberships.exists?(lato_invitation_id: lato_invitation_id))
+      errors.add(:email, :already_member) if taken
+    end
+
     # Hooks
     ##
 
-    # find user or create invitation when create membership
+    # resolve email to an existing user or invitation
+    before_validation on: :create do
+      self.email = email.to_s.strip.downcase.presence
+      next if lato_user_id.present? || lato_invitation_id.present? || email.blank?
+
+      self.lato_user = Lato::User.find_by(email: email)
+      self.lato_invitation = Lato::Invitation.find_by(email: email) unless lato_user
+    end
+
+    # create (and send) the invitation only once validations passed
     before_create do
-      if new_record? && email.present? && lato_user_id.blank? && lato_invitation_id.blank?
-        user = Lato::User.find_by_email(email)
-        if user
-          self.lato_user_id = user.id
-        else
-          invitation = Lato::Invitation.find_by_email(email)
-          invitation ||= Lato::Invitation.create(email: email)
-          unless invitation
-            errors.add(:email, 'There was an error with the invitation.')
-            throw(:abort)
-          end
-          self.lato_invitation_id = invitation.id
-        end
+      next if lato_user_id.present? || lato_invitation_id.present?
+
+      invitation = Lato::Invitation.create(email: email)
+      unless invitation.persisted?
+        errors.add(:base, invitation.errors.full_messages.to_sentence.presence || :invitation_error)
+        throw(:abort)
       end
+      self.lato_invitation = invitation
     end
 
     # External hooks
@@ -51,8 +76,12 @@ module LatoSpaces
 
     # listen Lato::Invitation save event to update memberships
     Lato::Invitation.after_save do |invitation|
-      if invitation.lato_user_id.present?
-        LatoSpaces::Membership.where(lato_invitation_id: invitation.id).each do |space_member|
+      next if invitation.lato_user_id.blank?
+
+      LatoSpaces::Membership.where(lato_invitation_id: invitation.id).each do |space_member|
+        if LatoSpaces::Membership.exists?(lato_spaces_group_id: space_member.lato_spaces_group_id, lato_user_id: invitation.lato_user_id)
+          space_member.destroy!
+        else
           space_member.update!(lato_user_id: invitation.lato_user_id, lato_invitation_id: nil)
         end
       end
@@ -71,10 +100,12 @@ module LatoSpaces
     # Helpers
     ##
 
-    def user_infos_label
-      return lato_user.full_name if lato_user.present?
+    # show_name: false hides the registered user's full name (only the email is shown)
+    def user_infos_label(show_name: true)
+      return (show_name ? lato_user.full_name : lato_user.email) if lato_user.present?
       return lato_invitation.email if lato_invitation.present?
-      'Unknown'
+
+      I18n.t('lato_spaces.unknown_member')
     end
 
     # Operations
@@ -91,7 +122,7 @@ module LatoSpaces
 
     def send_invite
       if lato_invitation.blank? || lato_user.present?
-        errors.add(:base, 'This user is already a member of this space.')
+        errors.add(:base, :already_joined)
         return false
       end
 

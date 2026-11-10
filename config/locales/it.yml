@@ -1,10 +1,10 @@
 it:
   lato_spaces:
-    space: Space
-    spaces: Spaces
+    space: Spazio
+    spaces: Spazi
     group: Gruppo
     groups: Gruppi
-    welcome: Ciao <b>%{user}</b>!<b> Seleziona il gruppo</b> con cui vuoi lavorare.
+    welcome_html: Ciao <b>%{user}</b>!<b> Seleziona il gruppo</b> con cui vuoi lavorare.
     cta_manage_groups: Gestisci gruppi
     new_group: Nuovo gruppo
     edit_group: Modifica gruppo
@@ -17,12 +17,60 @@ it:
     cta_edit: Modifica
     cta_delete: Cancella
     cta_resend: Reinvia
+    cta_select: Seleziona gruppo
     new_membership: Nuova iscrizione
+    no_groups: Non sei ancora membro di nessun gruppo. Chiedi a un amministratore di aggiungerti a un gruppo.
+    selected: Selezionato
+    preferred: Preferito
+    unknown_member: Sconosciuto
+    invitation_pending: Invito in attesa (inviato %{time} fa)
+    total_members: Membri totali
+    total_items: Elementi totali
+    membership_email_help: Se l'email non appartiene a un utente registrato, viene inviata un'email di invito.
+    membership_email_help_registered_only: Puoi aggiungere solo utenti registrati. Chiedi a un amministratore di invitare nuovi utenti.
+    aria:
+      view_group: Visualizza il gruppo %{name}
+      manage_group: Gestisci il gruppo %{name}
+      prefer_group: Imposta %{name} come gruppo preferito
+      select_group: Seleziona il gruppo %{name}
+      resend_invitation: Reinvia l'invito a %{name}
+      remove_member: Rimuovi %{name} dal gruppo
+    confirm:
+      group_destroy: Cancellare il gruppo "%{name}"? Verranno rimossi %{members} membri e %{items} associazioni di dati, e i record che richiedono un gruppo verranno cancellati. L'operazione è irreversibile.
+      membership_destroy: Rimuovere %{name} da questo gruppo?
+      membership_leave: Stai per uscire da questo gruppo e perderai l'accesso ai suoi dati. Continuare?
+      invite_resend: Reinviare l'email di invito a %{name}?
+    flash:
+      group_selected: Gruppo selezionato.
+      group_select_error: Errore durante il cambio di gruppo.
+      preferred_error: Errore durante il cambio del gruppo preferito.
+      access_denied: Non hai accesso a questa sezione.
+      group_created: Gruppo creato con successo.
+      group_updated: Gruppo aggiornato con successo.
+      group_destroyed: Gruppo cancellato con successo.
+      group_destroy_error: Il gruppo non è stato cancellato.
+      membership_created: Utente aggiunto al gruppo con successo.
+      membership_invited: Utente invitato nel gruppo. Entrerà nel gruppo dopo aver accettato l'invito.
+      membership_last_member: L'ultimo membro non può essere rimosso dal gruppo.
+      membership_destroyed: Iscrizione cancellata con successo.
+      membership_destroy_error: L'iscrizione non è stata cancellata.
+      invite_sent: Invito inviato con successo.
+      invite_error: L'invito non è stato inviato.
   activerecord:
     attributes:
       lato_spaces/group:
         name: Nome
         actions: Azioni
       lato_spaces/membership:
+        email: Email
         user_infos: Utente
         actions: Azioni
+    errors:
+      models:
+        lato_spaces/membership:
+          invitation_not_permitted: non appartiene a un utente registrato e gli inviti sono disabilitati
+          already_member: appartiene già a un membro di questo gruppo
+          invitation_error: Si è verificato un errore con l'invito.
+          already_joined: Questo utente è già membro di questo spazio.
+        lato_spaces/association:
+          already_associated: appartiene già a un gruppo

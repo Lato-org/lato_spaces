@@ -4,7 +4,7 @@ en:
     spaces: Spaces
     group: Group
     groups: Groups
-    welcome: Hi <b>%{user}</b>! Please <b>select the group</b> you want to work on.
+    welcome_html: Hi <b>%{user}</b>! Please <b>select the group</b> you want to work on.
     cta_manage_groups: Manage groups
     new_group: New group
     edit_group: Edit group
@@ -17,8 +17,60 @@ en:
     cta_edit: Edit
     cta_delete: Delete
     cta_resend: Resend
+    cta_select: Select group
     new_membership: New membership
+    no_groups: You are not a member of any group yet. Ask an administrator to add you to a group.
+    selected: Selected
+    preferred: Preferred
+    unknown_member: Unknown
+    invitation_pending: Invitation pending (sent %{time} ago)
+    total_members: Total members
+    total_items: Total items
+    membership_email_help: If the email does not belong to a registered user, an invitation email is sent.
+    membership_email_help_registered_only: Only registered users can be added. Ask an administrator to invite new users.
+    aria:
+      view_group: View group %{name}
+      manage_group: Manage group %{name}
+      prefer_group: Set %{name} as preferred group
+      select_group: Select group %{name}
+      resend_invitation: Resend invitation to %{name}
+      remove_member: Remove %{name} from the group
+    confirm:
+      group_destroy: Delete group "%{name}"? Its %{members} memberships and %{items} data associations will be removed, and records that require a group will be destroyed. This cannot be undone.
+      membership_destroy: Remove %{name} from this group?
+      membership_leave: You are about to leave this group and lose access to its data. Continue?
+      invite_resend: Resend the invitation email to %{name}?
+    flash:
+      group_selected: Group selected.
+      group_select_error: Error on changing group.
+      preferred_error: Error on changing preferred group.
+      access_denied: You have not access to this section.
+      group_created: Group was successfully created.
+      group_updated: Group was successfully updated.
+      group_destroyed: Group was successfully destroyed.
+      group_destroy_error: Group was not destroyed.
+      membership_created: User was successfully added to the group.
+      membership_invited: User was invited to the group. They join it after accepting the invitation.
+      membership_last_member: The last member can not be removed from the group.
+      membership_destroyed: Membership was successfully destroyed.
+      membership_destroy_error: Membership was not destroyed.
+      invite_sent: Invite was successfully sent.
+      invite_error: Invite was not sent.
   activerecord:
     attributes:
+      lato_spaces/group:
+        name: Name
+        actions: Actions
       lato_spaces/membership:
+        email: Email
         user_infos: User
+        actions: Actions
+    errors:
+      models:
+        lato_spaces/membership:
+          invitation_not_permitted: does not belong to a registered user and invitations are disabled
+          already_member: already belongs to a member of this group
+          invitation_error: There was an error with the invitation.
+          already_joined: This user is already a member of this space.
+        lato_spaces/association:
+          already_associated: already belongs to a group

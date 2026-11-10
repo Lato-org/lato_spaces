@@ -5,7 +5,10 @@
 
     <div class="mb-3">
       <%= lato_form_item_label form, :email %>
-      <%= lato_form_item_input_email form, :email, required: true %>
+      <%= lato_form_item_input_email form, :email, required: true, aria: { describedby: 'membership-email-help' } %>
+      <div id="membership-email-help" class="form-text">
+        <%= Lato.config.auth_disable_signup && !@session.user.lato_spaces_admin ? I18n.t('lato_spaces.membership_email_help_registered_only') : I18n.t('lato_spaces.membership_email_help') %>
+      </div>
     </div>
 
     <%= render 'layouts/lato_spaces/membership-form-extra_content', form: form %>

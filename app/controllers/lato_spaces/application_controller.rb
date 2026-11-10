@@ -10,33 +10,17 @@ module LatoSpaces
       @memberships = LatoSpaces::Membership.where(lato_user_id: @session.user_id).order(created_at: :desc)
       @groups = LatoSpaces::Group.joins(:lato_spaces_memberships).where(lato_spaces_memberships: { lato_user_id: @session.user_id }).order(name: :asc)
 
-      if LatoSpaces.config.setgroup_auto_after_login_if_single && LatoSpaces.config.setgroup_redirect_path && @session.get(:spaces_group_id).blank? && @groups.size == 1
-        group_id = @groups.first&.id
-        if group_id && session_group_create(group_id)
-          redirect_to Rails.application.routes.url_helpers.send(LatoSpaces.config.setgroup_redirect_path)
-          return
-        end
-      end
-
-      if LatoSpaces.config.setgroup_auto_after_login && LatoSpaces.config.setgroup_redirect_path && @session.get(:spaces_group_id).blank?
-        group_id = @groups.first&.id
-        if group_id && session_group_create(group_id)
-          redirect_to Rails.application.routes.url_helpers.send(LatoSpaces.config.setgroup_redirect_path)
-          return
-        end
-      end
+      auto_select_group if auto_select_group?
     end
 
     def setgroup
-      success_redirect_path = LatoSpaces.config.setgroup_redirect_path ? Rails.application.routes.url_helpers.send(LatoSpaces.config.setgroup_redirect_path) : lato_spaces.root_path
-
       respond_to do |format|
         if session_group_create(params[:id])
-          format.html { redirect_to success_redirect_path }
+          format.html { redirect_to setgroup_success_path, notice: I18n.t('lato_spaces.flash.group_selected') }
           format.json { render json: {} }
         else
-          format.html { redirect_to lato_spaces.root_path, alert: 'Error on changing group.' }
-          format.json { render json: { error: 'Error on changing group.' }, status: :unprocessable_entity }
+          format.html { redirect_to lato_spaces.root_path, alert: I18n.t('lato_spaces.flash.group_select_error') }
+          format.json { render json: { error: I18n.t('lato_spaces.flash.group_select_error') }, status: :unprocessable_entity }
         end
       end
     end
@@ -49,8 +33,8 @@ module LatoSpaces
           format.html { redirect_to lato_spaces.root_path }
           format.json { render json: {} }
         else
-          format.html { redirect_to lato_spaces.root_path, alert: 'Error on changing preferred group.' }
-          format.json { render json: { error: 'Error on changing preferred group.' }, status: :unprocessable_entity }
+          format.html { redirect_to lato_spaces.root_path, alert: I18n.t('lato_spaces.flash.preferred_error') }
+          format.json { render json: { error: I18n.t('lato_spaces.flash.preferred_error') }, status: :unprocessable_entity }
         end
       end
     end
@@ -60,21 +44,43 @@ module LatoSpaces
     def authenticate_lato_spaces_admin
       return true if @session.user.lato_spaces_admin
 
-      redirect_to lato.root_path, alert: 'You have not access to this section.'
+      redirect_to lato.root_path, alert: I18n.t('lato_spaces.flash.access_denied')
     end
 
     def authenticate_lato_spaces_creation
       return true if LatoSpaces.config.permit_group_creation
       return true if @session.user.lato_spaces_admin
 
-      redirect_to lato_spaces.root_path, alert: 'You have not access to this section.'
+      redirect_to lato_spaces.root_path, alert: I18n.t('lato_spaces.flash.access_denied')
     end
 
     def authenticate_lato_spaces_management
       return true if LatoSpaces.config.permit_group_management
       return true if @session.user.lato_spaces_admin
 
-      redirect_to lato_spaces.root_path, alert: 'You have not access to this section.'
+      redirect_to lato_spaces.root_path, alert: I18n.t('lato_spaces.flash.access_denied')
+    end
+
+    private
+
+    def auto_select_group?
+      return false unless LatoSpaces.config.setgroup_redirect_path
+      return false if @session.get(:spaces_group_id).present?
+
+      LatoSpaces.config.setgroup_auto_after_login ||
+        (LatoSpaces.config.setgroup_auto_after_login_if_single && @groups.size == 1)
+    end
+
+    # Preferred group first, then the first group by name.
+    def auto_select_group
+      group_id = @memberships.find(&:preferred)&.lato_spaces_group_id || @groups.first&.id
+      redirect_to setgroup_success_path if group_id && session_group_create(group_id)
+    end
+
+    def setgroup_success_path
+      return lato_spaces.root_path unless LatoSpaces.config.setgroup_redirect_path
+
+      Rails.application.routes.url_helpers.public_send(LatoSpaces.config.setgroup_redirect_path)
     end
   end
 end

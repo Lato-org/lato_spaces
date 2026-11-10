@@ -1,8 +1,6 @@
-<%= lato_page_head I18n.t('lato_spaces.new_membership'), [
-  { label: I18n.t('lato_spaces.spaces'), path: lato_spaces.root_path },
-  { label: I18n.t('lato_spaces.groups'), path: lato_spaces.groups_path },
+<%= lato_page_head I18n.t('lato_spaces.new_membership'), lato_spaces_breadcrumbs(
   { label: @group.name, path: lato_spaces.groups_show_path(@group) }
-] %>
+) %>
 
 <div class="card">
   <div class="card-body">

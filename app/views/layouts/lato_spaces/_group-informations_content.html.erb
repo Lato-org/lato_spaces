@@ -7,11 +7,11 @@ group ||= LatoSpaces::Group.new
 <table class="table">
   <tbody>
     <tr>
-      <th>Total members</th>
+      <th scope="row"><%= I18n.t('lato_spaces.total_members') %></th>
       <td><%= group.lato_spaces_memberships.count %></td>
     </tr>
     <tr>
-      <th>Total items</th>
+      <th scope="row"><%= I18n.t('lato_spaces.total_items') %></th>
       <td><%= group.lato_spaces_associations.count %></td>
     </tr>
   </tbody>

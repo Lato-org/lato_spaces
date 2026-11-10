@@ -28,11 +28,11 @@ module LatoSpaces
       @group = LatoSpaces::Group.new(group_params)
 
       respond_to do |format|
-        if @group.save && @group.lato_spaces_memberships.create(lato_user_id: @session.user_id)
+        if create_group_with_membership
           redirect = lato_spaces.groups_show_path(@group)
           redirect = lato_spaces.root_path unless @session.user.lato_spaces_admin
 
-          format.html { redirect_to redirect, notice: 'Group was successfully created.' }
+          format.html { redirect_to redirect, notice: I18n.t('lato_spaces.flash.group_created') }
           format.json { render json: @group }
         else
           format.html { render :create, status: :unprocessable_entity }
@@ -62,10 +62,10 @@ module LatoSpaces
     def update_action
       respond_to do |format|
         if @group.update(group_params)
-          format.html { redirect_to lato_spaces.groups_show_path(@group), notice: 'Group was successfully updated.' }
+          format.html { redirect_to lato_spaces.groups_show_path(@group), notice: I18n.t('lato_spaces.flash.group_updated') }
           format.json { render json: @group }
         else
-          format.html { render :show, status: :unprocessable_entity }
+          format.html { render :update, status: :unprocessable_entity }
           format.json { render json: @group.errors, status: :unprocessable_entity }
         end
       end
@@ -80,10 +80,10 @@ module LatoSpaces
           redirect = lato_spaces.groups_path
           redirect = lato_spaces.root_path unless @session.user.lato_spaces_admin
 
-          format.html { redirect_to redirect, notice: 'Group was successfully destroyed.' }
+          format.html { redirect_to redirect, notice: I18n.t('lato_spaces.flash.group_destroyed') }
           format.json { render json: @group }
         else
-          format.html { redirect_to lato_spaces.groups_show_path(@group), notice: 'Group was not destroyed.' }
+          format.html { redirect_to lato_spaces.groups_show_path(@group), alert: I18n.t('lato_spaces.flash.group_destroy_error') }
           format.json { render json: @group.errors, status: :unprocessable_entity }
         end
       end
@@ -93,6 +93,19 @@ module LatoSpaces
 
     def group_params
       params.require(:group).permit(LatoSpaces.config.group_params)
+    end
+
+    # The creator becomes the first member: group and membership are saved together or not at all.
+    def create_group_with_membership
+      ActiveRecord::Base.transaction do
+        raise ActiveRecord::Rollback unless @group.save
+
+        @group.lato_spaces_memberships.create!(lato_user_id: @session.user_id)
+        true
+      end || false
+    rescue ActiveRecord::RecordInvalid => e
+      @group.errors.add(:base, e.record.errors.full_messages.to_sentence)
+      false
     end
 
     def find_group
