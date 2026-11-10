@@ -5,7 +5,7 @@ Users select an active group; application data is scoped to it. Group selection 
 
 ## Installation
 
-Requires Rails 8.1.3.1 or newer in the 8.1 series and Lato 3.25.0 or newer. Existing applications must install the new Lato session migration before deployment; previous sessions are invalidated.
+Requires Rails 8.1.3.1 or newer in the 8.1 series and Lato 3.25.0 or newer.
 Add required dependencies to your application's Gemfile:
 
 ```ruby
@@ -54,10 +54,6 @@ Add a menu entry pointing to `lato_spaces.root_path` (the group selection page),
   Spaces
 <% end %>
 ```
-
-### Upgrading
-
-Upgrading from 3.2.0 or earlier: a new migration adds unique indexes on memberships (group + user, group + invitation) and associations (group + item). Run `rails lato_spaces:install:migrations` and `rails db:migrate`: the migration removes duplicate rows before adding the indexes.
 
 ## Configuration
 
@@ -205,6 +201,16 @@ Custom form fields must also be added to `group_params` / `membership_params`. T
 - [ ] Roles inside groups (owner/member) to limit deletion and member management
 - [ ] Show stats about entities on spaces show page
 - [ ] Show stats about entities attachments on spaces show page
+
+## Upgrading
+
+```bash
+bundle update lato_spaces
+rails lato_spaces:install:migrations
+rails db:migrate
+```
+
+Read [UPGRADING.md](UPGRADING.md) for the changes and extra steps required by each version.
 
 ## Development
 
